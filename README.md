@@ -1,4 +1,4 @@
-### ewsdocker/lms-bash:0.1.0
+### ewsdocker/lms-bash:0.1.1
 
 **Linux Management Scripts (LMS) for Bash**
 ____
