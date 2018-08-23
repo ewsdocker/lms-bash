@@ -99,9 +99,11 @@ function lmsHelpQClear()
 # ******************************************************************************
 function lmsHelpInit()
 {
-	[[ -z "${1}" ]] && return 1
+	local helpFile=${1}
 
-	lmshlp_XmlFile=${1}
+	[[ -z "${helpFile}" ]] && return 1
+
+	lmshlp_XmlFile=${helpFile}
 	lmshlp_XmlName="lmshlp_info"
 
 	lmshlp_Array=${lmshlp_XmlName}
@@ -206,38 +208,6 @@ function lmsHelpGetMsg()
 	lmshlp_Name=$name
 	lmshlp_Message=${lmsxmp_CommandResult}
 
-	return 0
-}
-
-# ******************************************************************************
-#
-#	lmsHelpToStr
-#
-#		Return a formatted string to print as the help display
-#
-#	parameters:
-#		none
-#
-#	outputs:
-#		(string) help-Message = formatted help message, 
-#									if helpMessage option not provided
-#
-#	returns:
-#		result = 0 if no error
-#				 1 if error
-#
-# ******************************************************************************
-function lmsHelpToStr()
-{
-	lmsHelpToStrV lmshlp
-	[[ $? -eq 0 ]] ||
-	 {
-		lmshlp_error=$?
-		echo ""
-		return 1
-	 }
-	
-	echo "$lmshlp"
 	return 0
 }
 
@@ -351,4 +321,37 @@ function lmsHelpToStrV()
 	lmsDeclareStr ${1} "${lmshlp_Message}"
 	return 0
 }
+
+# ******************************************************************************
+#
+#	lmsHelpToStr
+#
+#		Return a formatted string to print as the help display
+#
+#	parameters:
+#		none
+#
+#	outputs:
+#		(string) help-Message = formatted help message, 
+#									if helpMessage option not provided
+#
+#	returns:
+#		result = 0 if no error
+#				 1 if error
+#
+# ******************************************************************************
+function lmsHelpToStr()
+{
+	lmsHelpToStrV lmshlp
+	[[ $? -eq 0 ]] ||
+	 {
+		lmshlp_error=$?
+		echo ""
+		return 1
+	 }
+	
+	echo "$lmshlp"
+	return 0
+}
+
 

@@ -28,7 +28,7 @@ credentialFile=""					# Credentials file (path + name)
 
 declare -a groupList		# an array of groups to add users to
 declare -A groupIds			# an associative array of group name => id
-declare -A lmscli_shellParameters	# an associative array of parameters modified by cli
+declare -A lmscli_shellParam	# an associative array of parameters modified by cli
 
 declare -i lmscli_Errors		# an integer count of cli parameter errors
 

@@ -255,14 +255,14 @@ function lmsDomCLoad()
 	lmsDomDCallback "lmsDomCParse" 
 
 	lmsStackCreate ${lmsdcg_stackName} lmscfg_xUid 8
-	[[ $? -eq 0 ]] || return 2
+	[[ $? -eq 0 ]] || return 1
 
 	lmsdcg_ns=""
 	lmsStackWrite ${lmsdcg_stackName} ${lmsdcg_ns}
-	[[ $? -eq 0 ]] || return 3
+	[[ $? -eq 0 ]] || return 2
 
 	lmsDomDParse ${lmsdcg_path}
-	[[ $? -eq 0 ]] || return 4
+	[[ $? -eq 0 ]] || return 3
 
 	return 0
 }

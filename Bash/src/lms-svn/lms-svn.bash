@@ -156,7 +156,7 @@ checkOption()
 	local optionLocal=${1:-""}
 	local optionName=${2:-""}
 
-	if [[ -z "${optionLocal}" || ! " ${!lmscli_shellParameters[@]} " =~ "${optionLocal}" ||  -z "${optionName}" ]]
+	if [[ -z "${optionLocal}" || ! " ${!lmscli_shellParam[@]} " =~ "${optionLocal}" ||  -z "${optionName}" ]]
 	then
 		return 1
 	fi
@@ -352,7 +352,7 @@ getOptions()
 # *****************************************************************************
 processCliOptions()
 {
-	lmsCliParseParameter
+	lmsCliParse
 	[[ $? -eq 0 ]] ||
 	 {
 		lmsLogMessage $LINENO "ParamError" "cliParameterParse failed."
@@ -361,10 +361,10 @@ processCliOptions()
 
 	[[ ${lmscli_Errors} -eq 0 ]] &&
 	 {
-		lmsCliApplyInput
+		lmsCliApply
 		[[ $? -eq 0 ]] ||
 		 {
-			lmsLogMessage $LINENO "ParamError" "lmsCliApplyInput failed."
+			lmsLogMessage $LINENO "ParamError" "lmsCliApply failed."
 			lmsErrorExitScript "ParamError"
 		 }
 	 }

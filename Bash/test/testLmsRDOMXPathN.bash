@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.2
+# @version 0.0.3
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -27,22 +27,27 @@
 #
 #		Version 0.0.1 - 06-30-2016.
 #				0.0.2 - 02-10-2017.
+#				0.0.3 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
-
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsRDomXPathN"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-declare    lmsscr_Version="0.0.2"				# script version
-declare	   lmstst_Declarations="$etcDir/testVariables.xml"
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+declare    lmsscr_Version="0.0.3"				# script version
+declare	   lmstst_Declarations="$dirEtc/testVariables.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -52,8 +57,8 @@ declare	   lmstst_Declarations="$etcDir/testVariables.xml"
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
-. $testlibDir/testUtilities.bash
+. $dirAppLib/testDump.bash
+. $dirAppLib/testUtilities.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -162,8 +167,8 @@ testLmsRDomXPNData()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -207,7 +212,7 @@ fi
 
 # *******************************************************
 
-lmsRDomCallback "lmsRDOMXPathNode" 
+lmsRDomCallback "lmsRDomXPathN" 
 [[ $? -eq 0 ]] ||
  {
 	lmsConioDebugExit $LINENO "RDomError" "Callback function name is missing"
@@ -221,7 +226,7 @@ lmsRDomParse ${lmstst_Declarations}
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************
 

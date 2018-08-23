@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.2
+# @version 0.1.3
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -29,23 +29,26 @@
 #					0.1.0 - 01-12-2017.
 #					0.1.1 - 01-24-2017.
 #					0.1.2 - 02-09-2017.
+#					0.1.3 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-
-. $testlibDir/stdLibs.bash
-. $libDir/lmsSortArray.bash
-
-. $testlibDir/cliOptions.bash
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsErrorQ"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-lmsscr_Version="0.1.2"					# script version
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.1.3"					# script version
 
 declare    lmstst_stackName="errorQueueStack"
 
@@ -57,8 +60,8 @@ declare    lmstst_stackName="errorQueueStack"
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
-. $testlibDir/testUtilities.bash
+. $dirAppLib/testDump.bash
+. $dirAppLib/testUtilities.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -509,8 +512,8 @@ function testlmsErrorQDispPop()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -681,7 +684,7 @@ lmsConioDisplay "*******************************************************"
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************
 

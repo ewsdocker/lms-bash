@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.1
+# @version 0.1.2
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -29,24 +29,29 @@
 #				0.0.2 - 06-18-2016.
 #				0.1.0 - 01-29-2017.
 #				0.1.1 - 02-09-2017.
+#				0.1.2 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
-
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsDynNode"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-declare    lmsscr_Version="0.1.1"					# script version
+. testlib/installDirs.bash
 
-declare    lmsvar_errors="$etcDir/errorCodes.xml"
-declare	   lmsvar_help="$etcDir/testHelp.xml"
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+declare    lmsscr_Version="0.1.2"					# script version
+
+declare    lmsvar_errors="$dirEtc/errorCodes.xml"
+declare	   lmsvar_help="$dirEtc/testHelp.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -56,7 +61,7 @@ declare	   lmsvar_help="$etcDir/testHelp.xml"
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -237,8 +242,8 @@ function testParseCommand()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -265,7 +270,7 @@ lmsConioDisplay "*******************************************"
 #		help tests
 #
 
-testParse "help" "${etcDir}/helpTest.xml" "//lms/help/options/var/@name"
+testParse "help" "${dirEtc}/helpTest.xml" "//lms/help/options/var/@name"
 [[ $? -eq 0 ]] ||
  {
 	testResult=$?
@@ -346,6 +351,6 @@ fi
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

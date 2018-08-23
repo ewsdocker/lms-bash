@@ -7,7 +7,7 @@
 # ***************************************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.2
+# @version 0.1.3
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -29,23 +29,27 @@
 #					0.1.0 - 01-17-2017.
 #					0.1.1 - 01-30-2017.
 #					0.1.2 - 02-10-2017.
+#					0.1.3 - 02-23-2017.
 #
 # ***************************************************************************************************
 # ***************************************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-
-. $testlibDir/stdLibs.bash
-
-. $testlibDir/cliOptions.bash
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsDynDomD"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-declare    lmsscr_Version="0.1.2"					# script version
-declare	   lmstst_Declarations="$etcDir/testVariables.xml"
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+declare    lmsscr_Version="0.1.3"					# script version
+declare	   lmstst_Declarations="$dirEtc/testVariables.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -55,7 +59,7 @@ declare	   lmstst_Declarations="$etcDir/testVariables.xml"
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -179,8 +183,8 @@ testBuildDataTable()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -246,6 +250,6 @@ lmsDomDParse ${lmstst_Declarations}
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

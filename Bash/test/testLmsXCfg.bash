@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.2
+# @version 0.1.3
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -29,24 +29,28 @@
 #					0.1.0 - 01-24-2017.
 #					0.1.1 - 02-09-2017.
 #					0.1.2 - 02-14-2017.
+#					0.1.3 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-
-. $testlibDir/stdLibs.bash
-
-. $testlibDir/cliOptions.bash
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsXcfg"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-lmsscr_Version="0.1.2"						# script version
+. testlib/installDirs.bash
 
-lmstst_Declarations="$etcDir/testVariables.xml"
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.1.3"						# script version
+
+lmstst_Declarations="$dirEtc/testVariables.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -56,7 +60,7 @@ lmstst_Declarations="$etcDir/testVariables.xml"
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -114,8 +118,8 @@ function testBuildData()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -149,6 +153,6 @@ testLmsDmpVar "lmstest_ lmsxcfg_ lmsxml_ lmscli_ lmsstk"
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

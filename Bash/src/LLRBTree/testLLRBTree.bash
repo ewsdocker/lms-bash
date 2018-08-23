@@ -62,7 +62,7 @@ fi
 function runFirstTests()
 {
 	treeName="NoblePineLodge"
-	llrbTreeCreate "${treeName}"
+	lmsLLRBtCreate "${treeName}"
 	if [ $? -ne 0 ]
 	then
 		lmsErrorQWrite $LINENO TreeCreate "Unable to create the requested tree: $treeName"
@@ -77,11 +77,11 @@ function runFirstTests()
 	keynodeName="${treeName}"
 	keynodeUID=""
 
-	result=$( llrbTreeIsRedNode $keynodeName )
+	result=$( lmsLLRBtIsRed $keynodeName )
 
 	lmsConioDisplay "result = $result"
 
-	lmsConioDisplay "$( llrbNodeToString $keynodeName )"
+	lmsConioDisplay "$( lmsLLRBnTS $keynodeName )"
 
 	# **************************************************************************
 
@@ -95,15 +95,15 @@ function runFirstTests()
 
 	lmsConioDisplay "Creating node: ${leftnodeName}"
 
-	llrbNodeCreate "${leftnodeName}" leftnodeUID "${leftnodeData}"
-	llrbNodeSet "${leftnodeName}" "color" 0
+	lmsLLRBnCreate "${leftnodeName}" leftnodeUID "${leftnodeData}"
+	lmsLLRBnSet "${leftnodeName}" "color" 0
 
 	lmsConioDisplay "Created node: ${leftnodeName} = $leftnodeUID, linking left child of $keynodeName"
 	lmsConioDisplay ""
 
-	llrbNodeSet $keynodeName "left" $leftnodeName
+	lmsLLRBnSet $keynodeName "left" $leftnodeName
 
-	lmsConioDisplay "$( llrbNodeToString $keynodeName )"
+	lmsConioDisplay "$( lmsLLRBnTS $keynodeName )"
 
 	# **************************************************************************
 
@@ -117,15 +117,15 @@ function runFirstTests()
 
 	lmsConioDisplay "Creating node: ${rightnodeName}"
 
-	llrbNodeCreate "${rightnodeName}" rightnodeUID "${rightnodeData}"
-	llrbNodeSet "${rightnodeName}" "color" 0
+	lmsLLRBnCreate "${rightnodeName}" rightnodeUID "${rightnodeData}"
+	lmsLLRBnSet "${rightnodeName}" "color" 0
 
 	lmsConioDisplay "Created node: ${rightnodeName} = $rightnodeUID, linking right child of $keynodeName"
 	lmsConioDisplay "" and unwind properly
 
-	llrbNodeSet $keynodeName "right" $rightnodeName
+	lmsLLRBnSet $keynodeName "right" $rightnodeName
 
-	lmsConioDisplay "$( llrbNodeToString $keynodeName )"
+	lmsConioDisplay "$( lmsLLRBnTS $keynodeName )"
 
 	# **************************************************************************
 
@@ -136,7 +136,7 @@ function runFirstTests()
 	lmsConioDisplay "flipping color"
 	lmsConioDisplay ""
 
-	llrbTreeFlipColors "$keynodeName"
+	lmsLLRBtFlipC "$keynodeName"
 	if [ $? -ne 0 ]
 	then
 		lmsErrorQWrite $LINENO TreeModifyNode "Unable to flip color on the requested node: $keynodeName"
@@ -150,7 +150,7 @@ function runFirstTests()
 	lmsConioDisplay "flipping color AGAIN"
 	lmsConioDisplay ""
 
-	llrbTreeFlipColors $keynodeName
+	lmsLLRBtFlipC $keynodeName
 	if [ $? -ne 0 ]
 	then
 		lmsErrorQWrite $LINENO TreeModifyNode "Unable to flip color on the requested node: $keynodeName"
@@ -164,8 +164,8 @@ function runFirstTests()
 	lmsConioDisplay "comparison"
 	lmsConioDisplay ""
 
-	rname=$( llrbNodeGet $rightnodeName 'key' )
-	lname=$( llrbNodeGet $leftnodeName  'key' )
+	rname=$( lmsLLRBnGet $rightnodeName 'key' )
+	lname=$( lmsLLRBnGet $leftnodeName  'key' )
 
 	lmsConioDisplay "Comparing $rname with $lname"
 
@@ -180,11 +180,11 @@ function displayNodes()
 	lmsConioDisplay "******************* NODES *****************************"
 	lmsConioDisplay ""
 
-	lmsConioDisplay "$( llrbNodeToString $keynodeName )"
+	lmsConioDisplay "$( lmsLLRBnTS $keynodeName )"
 
-	lmsConioDisplay "$( llrbNodeToString $leftnodeName )"
+	lmsConioDisplay "$( lmsLLRBnTS $leftnodeName )"
 
-	lmsConioDisplay "$( llrbNodeToString $rightnodeName )"
+	lmsConioDisplay "$( lmsLLRBnTS $rightnodeName )"
 
 	lmsConioDisplay ""
 	lmsConioDisplay "*************** END NODES *****************************"
@@ -197,7 +197,7 @@ function displayComparison()
 	local rightnodeName="${1}"
 	local leftnodeName="${2}"
 
-	llrbNodeCompare "${rightnodeName}" "${leftnodeName}"
+	lmsLLRBnCompare "${rightnodeName}" "${leftnodeName}"
 	result=$?
 
 	lmsConioDisplay "Compare result = '$result'"
@@ -265,7 +265,7 @@ lmsConioDisplay "*******************************************************"
 # *************************************************************************************************
 
 treeName="LLRBTree"
-llrbTreeCreate "${treeName}"
+lmsLLRBtCreate "${treeName}"
 if [ $? -ne 0 ]
 then
 	lmsErrorQWrite $LINENO TreeCreate "Unable to create the requested tree: $treeName"
@@ -287,7 +287,7 @@ memberUID=""
 
 lmsConioDisplay "Insertting node: ${memberName}"
 
-llrbTreeInsert "${memberName}" "${memberData}"
+lmsLLRBtInsert "${memberName}" "${memberData}"
 
 
 #dumpNameTable
@@ -298,9 +298,9 @@ exit 1
 lmsConioDisplay "Created node: ${leftnodeName} = $leftnodeUID, linking left child of $keynodeName"
 lmsConioDisplay ""
 
-llrbNodeSet $keynodeName "left" $leftnodeName
+lmsLLRBnSet $keynodeName "left" $leftnodeName
 
-lmsConioDisplay "$( llrbNodeToString $keynodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $keynodeName )"
 
 # *************************************************************************************************
 
@@ -314,15 +314,15 @@ rightnodeUID=""
 
 lmsConioDisplay "Creating node: ${rightnodeName}"
 
-llrbNodeCreate "${rightnodeName}" rightnodeUID "${rightnodeData}"
-llrbNodeSet "${rightnodeName}" "color" 0
+lmsLLRBnCreate "${rightnodeName}" rightnodeUID "${rightnodeData}"
+lmsLLRBnSet "${rightnodeName}" "color" 0
 
 lmsConioDisplay "Created node: ${rightnodeName} = $rightnodeUID, linking right child of $keynodeName"
 lmsConioDisplay ""
 
-llrbNodeSet $keynodeName "right" $rightnodeName
+lmsLLRBnSet $keynodeName "right" $rightnodeName
 
-lmsConioDisplay "$( llrbNodeToString $keynodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $keynodeName )"
 
 # *************************************************************************************************
 

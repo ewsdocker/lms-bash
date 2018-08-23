@@ -9,15 +9,15 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.2
-# @copyright © 2016. EarthWalk Software.
+# @version 0.0.3
+# @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
 # @subpackage DOMDocument
 #
 # *****************************************************************************
 #
-#	Copyright © 2016. EarthWalk Software
+#	Copyright © 2016, 2017. EarthWalk Software
 #	Licensed under the Academic Free License, version 3.0.
 #
 #	Refer to the file named License.txt provided with the source,
@@ -29,80 +29,34 @@
 #
 #			Version 0.0.1 - 09-06-2016.
 #                   0.0.2 - 09-17-2016.
+#					0.0.3 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-# *****************************************************************************
-# *****************************************************************************
-#
-#    	External Scripts
-#
-# *****************************************************************************
-# *****************************************************************************
-
-lmscli_optProduction=0
-
-if [ $lmscli_optProduction -eq 1 ]
-then
-	rootDir="/usr/local"
-	libDir="$rootDir/lib/lms/bash"
-	etcDir="$rootDir/etc/lms"
-else
-	rootDir="../.."
-	libDir="$rootDir/lib"
-	etcDir="$rootDir/etc"
-fi
-
-. $libDir/arraySort.bash
-. $libDir/lmsCli.bash
-. $libDir/lmsColorDef.bash
-. $libDir/lmsConio.bash
-. $libDir/lmsXCfg.bash
-. $libDir/lmsDomDelTree.bash
-#. $libDir/lmsDomC.bash
-. $libDir/lmsDomD.bash
-. $libDir/lmsDomN.bash
-. $libDir/lmsDomR.bash
-. $libDir/lmsDomTC.bash
-. $libDir/lmsDomTs.bash
-. $libDir/lmsDmpVar
-. $libDir/lmsDynNode.bash
-. $libDir/lmsDynArray.bash
-. $libDir/lmsError.bash
-. $libDir/lmsErrorQDisp.bash
-. $libDir/lmsErrorQ.bash
-. $libDir/lmsHelp.bash
-. $libDir/lmsDeclare.bash
-. $libDir/lmsLog.bash
-. $libDir/lmsLogRead.bash
-. $libDir/lmsRlmsDomD.bash
-. $libDir/lmsScriptName.bash
-. $libDir/lmsStack.bash
-. $libDir/lmsStartup.bash
-. $libDir/lmsStr.bash
-. $libDir/lmsUId
-. $libDir/lmsUtilities.bash
-. $libDir/lmsXMLParse
-. $libDir/lmsXPath.bash
+declare    lmsapp_name="testLmsDomDelTree"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
-# *****************************************************************************
-#
-#   Global variables - modified by program flow
-#
-# *****************************************************************************
+
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
 # *****************************************************************************
 
-declare    lmsscr_Version="0.0.2"						# script version
-declare    lmsvar_errors="$etcDir/errorCodes.xml"
-declare    lmsvar_help="$etcDir/testHelp.xml"			# path to the help information file
+declare    lmsscr_Version="0.0.3"						# script version
+declare    lmsvar_errors="$dirEtc/errorCodes.xml"
+declare    lmsvar_help="$dirEtc/testHelp.xml"			# path to the help information file
 
-declare	   lmstest_cliOptions="$etcDir/testlmsDomTCConfig.xml"
+declare	   lmstest_cliOptions="$dirEtc/testDOMToConfig.xml"
 
-declare    lmstest_logDir="/var/local/log/lms-test/"
+declare    lmstest_logDir="$dirAppLog"
 declare    lmstest_logName="test.log"
-declare    lmstest_logFile="${lmstest_logDir}${lmstest_logName}"
+declare    lmstest_logFile="${lmstest_logDir}/${lmstest_logName}"
 
 declare -i lmstest_result=0
 
@@ -132,7 +86,7 @@ function updateCliOptions()
 		return 1
 	 }
 
-	lmsCliParseParameter
+	lmsCliParse
 	lmstest_result=$?
 	[[ $lmstest_result -eq 0 ]] ||
 	 {
@@ -142,11 +96,11 @@ function updateCliOptions()
 
 	[[ ${lmscli_Errors} -eq 0 ]] &&
 	 {
-		lmsCliApplyInput
+		lmsCliApply
 		lmstest_result=$?
 		[[ $lmstest_result -eq 0 ]] ||
 		 {
-			lmsConioDebug $LINENO "ParamError" "lmsCliApplyInput failed." 
+			lmsConioDebug $LINENO "ParamError" "lmsCliApply failed." 
 			return 3
 		 }
 	 }
@@ -179,7 +133,7 @@ function updateLogFileName()
 	lmstest_logDir="${lmstest_logDir}"
 	lmstest_logName="${lmsscr_Name}.log"
 
-	lmstest_logFile="${lmstest_logDir}${lmstest_logName}"
+	lmstest_logFile="${lmstest_logDir}/${lmstest_logName}"
 	lmsConioDebug $LINENO "Debug" "Log file name: $lmstest_logFile"
 
 	return 0
@@ -193,30 +147,26 @@ function updateLogFileName()
 # *****************************************************************************
 # *****************************************************************************
 
+lmsScriptFileName $0
+
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
+
+lmsHelpInit ${lmsvar_help}
+
+# *****************************************************************************
+# *****************************************************************************
+#
+#		Run the tests starting here
+#
+# *****************************************************************************
+# *****************************************************************************
+
 lmscli_optDebug=0				# (d) Debug output if not 0
 lmscli_optSilent=0    			# (q) Quiet setting: non-zero for absolutely NO output
 lmscli_optBatch=0				# (b) Batch mode - missing parameters fail
 lmscli_optQuiet=0				# set to 1 to lmscli_optOverride the lmscli_optSilent flag
 lmscli_optQueueErrors=0
-
-lmsScriptFileName $0
-lmstest_logFile="${lmsscr_Name}.log"
-
-lmsLogOpen "${lmstest_logFile}"
-lmstest_result=$?
-[[ $lmstest_result -eq 0 ]] ||
- {
-	logDebugMessaage $LINENO "Debug" "($lmstest_result) Unable to open log file: '${lmstest_logFile}'"
-	exit 1
- }
-
-lmsStartupInit $lmsscr_Version ${lmsvar_errors}
-lmstest_result=$?
-[[ $lmstest_result -eq 0 ]] ||
- {
-	logDebugMessaage $LINENO "Debug" "($lmstest_result) Unable to load error codes."
-	errorExit "Debug"
- }
 
 updateCliOptions
 lmstest_result=$?
@@ -315,14 +265,6 @@ echo ""
 
 # *****************************************************************************
 
-if [ $lmscli_optDebug -ne 0 ]
-then
-	lmsErrorQDispPop
-fi
+. $dirAppLib/scriptEnd.bash
 
-lmsConioDisplay ""
-lmsConioDisplay "  Log-file: ${lmstest_logFile}"
-lmsConioDisplay ""
-
-lmsErrorExitScript "EndOfTest"
-
+# *****************************************************************************

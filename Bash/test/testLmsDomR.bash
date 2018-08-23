@@ -9,7 +9,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.2
+# @version 0.1.3
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -32,28 +32,32 @@
 #					0.1.0 - 01-15-2017.
 #					0.1.1 - 01-23-2017.
 #					0.1.2 - 02-10-2017.
+#					0.1.3 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
-
-. $libDir/lmsDomTs.bash
-
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsDomR"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-#lmstst_testOptions="$etcDir/errorCodes.xml"
-#lmstst_testOptions="$etcDir/testDeclarations.xml"
-#lmstst_testOptions="$etcDir/testDOMVariables.xml"
-lmstst_testOptions="$etcDir/cliOptions.xml"
+. testlib/installDirs.bash
 
-lmsscr_Version="0.1.2"						# script version
+. $dirAppLib/stdLibs.bash
+. $dirLib/lmsDomTS.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.1.3"						# script version
+
+#lmstst_testOptions="$dirEtc/errorCodes.xml"
+#lmstst_testOptions="$dirEtc/testDeclarations.xml"
+#lmstst_testOptions="$dirEtc/testDOMVariables.xml"
+lmstst_testOptions="$dirEtc/cliOptions.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -63,7 +67,7 @@ lmsscr_Version="0.1.2"						# script version
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -83,8 +87,8 @@ lmsscr_Version="0.1.2"						# script version
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -130,6 +134,6 @@ lmsConioDisplay
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

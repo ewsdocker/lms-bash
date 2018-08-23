@@ -1,7 +1,7 @@
 # ******************************************************************************
 # ******************************************************************************
 #
-#   	lmsRDOMXPath.bash
+#   	lmsRDomXPath.bash
 #
 #		Provides access to a subset of XPath queries via xmllint (in libxml2)
 #

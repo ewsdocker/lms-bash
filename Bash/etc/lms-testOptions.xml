@@ -37,32 +37,32 @@
 		<declare name="optQueueErrors" type="integer">0</declare>
 		<declare name="optSilent"      type="integer">0</declare>
 
-		<declare name="shellParameters" type="associative" />
+		<declare name="shellParam" type="associative" />
 
 		<!-- svnMakeRepo option map -->
 
-		<declare parent="shellParameters" type="element" name="branch"  >optBranch</declare>
-		<declare parent="shellParameters" type="element" name="log"     >optLogDisplay</declare>
-		<declare parent="shellParameters" type="element" name="repo"    >optRepo</declare>
-		<declare parent="shellParameters" type="element" name="selinux" >optSelinux</declare>
-		<declare parent="shellParameters" type="element" name="service" >optService</declare>
-		<declare parent="shellParameters" type="element" name="source"  >optSource</declare>
-		<declare parent="shellParameters" type="element" name="svn"     >optSvn</declare>
-		<declare parent="shellParameters" type="element" name="svngroup">optSvnGroup</declare>
-		<declare parent="shellParameters" type="element" name="svnname" >optSvnName</declare>
-		<declare parent="shellParameters" type="element" name="svnuser" >optSvnUser</declare>
+		<declare parent="shellParam" type="element" name="branch"  >optBranch</declare>
+		<declare parent="shellParam" type="element" name="log"     >optLogDisplay</declare>
+		<declare parent="shellParam" type="element" name="repo"    >optRepo</declare>
+		<declare parent="shellParam" type="element" name="selinux" >optSelinux</declare>
+		<declare parent="shellParam" type="element" name="service" >optService</declare>
+		<declare parent="shellParam" type="element" name="source"  >optSource</declare>
+		<declare parent="shellParam" type="element" name="svn"     >optSvn</declare>
+		<declare parent="shellParam" type="element" name="svngroup">optSvnGroup</declare>
+		<declare parent="shellParam" type="element" name="svnname" >optSvnName</declare>
+		<declare parent="shellParam" type="element" name="svnuser" >optSvnUser</declare>
 
 		<!-- standard (cli) option map -->
 
-		<declare parent="shellParameters" type="element" name="batch"    >optBatch</declare>
-		<declare parent="shellParameters" type="element" name="debug"    >optDebug</declare>
-		<declare parent="shellParameters" type="element" name="display"  >optDisplay</declare>
-		<declare parent="shellParameters" type="element" name="help"     >optHelp</declare>
-		<declare parent="shellParameters" type="element" name="host"     >optHost</declare>
-		<declare parent="shellParameters" type="element" name="noreset"  >optNoReset</declare>
-		<declare parent="shellParameters" type="element" name="override" >optOverride</declare>
-		<declare parent="shellParameters" type="element" name="prod"     >optProduction</declare>
-		<declare parent="shellParameters" type="element" name="queue"    >optQueueErrors</declare>
-		<declare parent="shellParameters" type="element" name="quiet"    >optSilent</declare>
+		<declare parent="shellParam" type="element" name="batch"    >optBatch</declare>
+		<declare parent="shellParam" type="element" name="debug"    >optDebug</declare>
+		<declare parent="shellParam" type="element" name="display"  >optDisplay</declare>
+		<declare parent="shellParam" type="element" name="help"     >optHelp</declare>
+		<declare parent="shellParam" type="element" name="host"     >optHost</declare>
+		<declare parent="shellParam" type="element" name="noreset"  >optNoReset</declare>
+		<declare parent="shellParam" type="element" name="override" >optOverride</declare>
+		<declare parent="shellParam" type="element" name="prod"     >optProduction</declare>
+		<declare parent="shellParam" type="element" name="queue"    >optQueueErrors</declare>
+		<declare parent="shellParam" type="element" name="quiet"    >optSilent</declare>
 	</declarations>
 </lms>

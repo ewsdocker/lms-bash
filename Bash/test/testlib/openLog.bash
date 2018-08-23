@@ -1,7 +1,7 @@
 #
 #	Use the script name to create a log name and prepend the path
 #
-lmstst_logName="${lmstst_logDir}${lmsscr_Name}.log"
+lmstst_logName="${dirAppLog}/${lmsapp_name}.log"
 
 #
 #	Open the newly named log file

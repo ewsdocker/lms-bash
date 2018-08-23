@@ -110,9 +110,9 @@ lmsConioDisplay ""
 
 	# *************************************************************************
 
-lmsConioDisplay "calling lmsCliParseParameter"
+lmsConioDisplay "calling lmsCliParse"
 
-	lmsCliParseParameter 0
+	lmsCliParse 0
 	[[ $? -eq 0 ]] ||
 	 {
 		lmsConioDisplay "cliParameterParse failed"
@@ -125,18 +125,18 @@ echo "Errors: '$lmscli_Errors'"
 
 	[[ ${lmscli_Errors} -eq 0 ]] &&
 	 {
-		lmsCliApplyInput
+		lmsCliApply
 		[[ $? -eq 0 ]] ||
 		 {
-			lmsConioDisplay "lmsCliApplyInput failed." 
+			lmsConioDisplay "lmsCliApply failed." 
 			lmsErrorExitScript "ParamError"
 		 }
 	 }
 
-	lmsCliLookupParameter "logname" lmstst_logNameOption
+	lmsCliLookup "logname" lmstst_logNameOption
 	[[ $? -eq 0 ]] ||
 	{
-		lmsConioDisplay "lmsCliValidParameter failed for logname"
+		lmsConioDisplay "lmsCliValid failed for logname"
 testLmsDmpVar "lmscli_ lmstest_"
 		lmsErrorExitScript "ParamError"
 	}

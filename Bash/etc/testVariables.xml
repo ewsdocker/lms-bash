@@ -23,25 +23,25 @@
 		<declare name="optSrc"      type="string" >src/lms</declare>
 		<declare name="optType"     type="string" >bash</declare>
 
-		<declare name="shellParameters" type="associative" />
+		<declare name="shellParam" type="associative" />
 
-		<declare parent="shellParameters" type="element"  name="batch"  >optBatch</declare>
-		<declare parent="shellParameters" type="element"  name="bin"    >optBin</declare>
-		<declare parent="shellParameters" type="element"  name="debug"  >optDebug</declare>
-		<declare parent="shellParameters" type="element"  name="etc"    >optEtc</declare>
-		<declare parent="shellParameters" type="element"  name="fetch"  >optFetch</declare>
-		<declare parent="shellParameters" type="element"  name="help"   >optHelp</declare>
-		<declare parent="shellParameters" type="element"  name="host"   >optHost</declare>
-		<declare parent="shellParameters" type="element"  name="lang"   >optLang</declare>
-		<declare parent="shellParameters" type="element"  name="lib"    >optLib</declare>
-		<declare parent="shellParameters" type="element"  name="man"    >optMan</declare>
-		<declare parent="shellParameters" type="element"  name="path"   >optPath</declare>
-		<declare parent="shellParameters" type="element"  name="quiet"  >optSilent</declare>
-		<declare parent="shellParameters" type="element"  name="repo"   >optRepo</declare>
-		<declare parent="shellParameters" type="element"  name="root"   >optRoot</declare>
-		<declare parent="shellParameters" type="element"  name="script" >optScript</declare>
-		<declare parent="shellParameters" type="element"  name="src"    >optSrc</declare>
-		<declare parent="shellParameters" type="element"  name="type"   >optType</declare>
+		<declare parent="shellParam" type="element"  name="batch"  >optBatch</declare>
+		<declare parent="shellParam" type="element"  name="bin"    >optBin</declare>
+		<declare parent="shellParam" type="element"  name="debug"  >optDebug</declare>
+		<declare parent="shellParam" type="element"  name="etc"    >optEtc</declare>
+		<declare parent="shellParam" type="element"  name="fetch"  >optFetch</declare>
+		<declare parent="shellParam" type="element"  name="help"   >optHelp</declare>
+		<declare parent="shellParam" type="element"  name="host"   >optHost</declare>
+		<declare parent="shellParam" type="element"  name="lang"   >optLang</declare>
+		<declare parent="shellParam" type="element"  name="lib"    >optLib</declare>
+		<declare parent="shellParam" type="element"  name="man"    >optMan</declare>
+		<declare parent="shellParam" type="element"  name="path"   >optPath</declare>
+		<declare parent="shellParam" type="element"  name="quiet"  >optSilent</declare>
+		<declare parent="shellParam" type="element"  name="repo"   >optRepo</declare>
+		<declare parent="shellParam" type="element"  name="root"   >optRoot</declare>
+		<declare parent="shellParam" type="element"  name="script" >optScript</declare>
+		<declare parent="shellParam" type="element"  name="src"    >optSrc</declare>
+		<declare parent="shellParam" type="element"  name="type"   >optType</declare>
 
 		<declare name="cmndsValid" type="array" />
 

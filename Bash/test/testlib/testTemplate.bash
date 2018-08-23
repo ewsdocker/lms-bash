@@ -29,13 +29,12 @@
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
+. testlib/installDirs.bash
 
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
+. $dirAppLib/stdLibs.bash
+. $dirAppLib/cliOptions.bash
 
-. $testlibDir/commonVars.bash
+. $dirAppLib/commonVars.bash
 
 # *****************************************************************************
 
@@ -49,8 +48,8 @@ lmsscr_Version="0.1.1"						# script version
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
-. $testlibDir/testUtilities.bash
+. $dirAppLib/testDump.bash
+. $dirAppLib/testUtilities.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -89,8 +88,8 @@ function testFunction()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -103,6 +102,6 @@ lmsScriptFileName $0
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

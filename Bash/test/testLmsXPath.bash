@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.1
+# @version 0.1.2
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -29,25 +29,29 @@
 #				0.0.2 - 06-16-2016.
 #				0.1.0 - 01-30-2017.
 #				0.1.1 - 02-09-2017.
+#				0.1.2 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-
-. $testlibDir/stdLibs.bash
-
-. $testlibDir/cliOptions.bash
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsXPath"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-lmsscr_Version="0.1.1"						# script version
+. testlib/installDirs.bash
 
-lmsvar_errors="$etcDir/errorCodes.xml"
-lmsvar_help="$etcDir/testHelp.xml"			# path to the help information file
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.1.2"						# script version
+
+lmsvar_errors="$dirEtc/errorCodes.xml"
+lmsvar_help="$dirEtc/testHelp.xml"			# path to the help information file
 
 # *****************************************************************************
 # *****************************************************************************
@@ -57,7 +61,7 @@ lmsvar_help="$etcDir/testHelp.xml"			# path to the help information file
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -365,8 +369,8 @@ lmsScriptFileName $0
 lmsScriptDisplayName
 lmsConioDisplay ""
 
-. $testlibDir/openLog.bash
-#. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+#. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -381,7 +385,7 @@ testLmsXPathReset
 lmsConioDisplay ""
 lmsConioDisplay "*******************************************"
 
-testLmsXPathInit "shell" "$etcDir/shellHelp.xml"
+testLmsXPathInit "shell" "$dirEtc/shellHelp.xml"
 
 lmsConioDisplay ""
 lmsConioDisplay "*******************************************"
@@ -460,6 +464,6 @@ testLmsDmpVar "lmserr_"
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

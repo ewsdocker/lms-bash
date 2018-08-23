@@ -1,22 +1,22 @@
 # *********************************************************************************
 # *********************************************************************************
 #
-#   llrbTree.bash
+#   lmsLLRBTree.bash
 #
 #		Left-Leaning Red-Black Tree
 #
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.1
-# @copyright © 2016. EarthWalk Software.
+# @version 0.0.2
+# @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
 # @subpackage llrbNode
 #
 # *****************************************************************************
 #
-#	Copyright © 2016. EarthWalk Software
+#	Copyright © 2016, 2017. EarthWalk Software
 #	Licensed under the Academic Free License, version 3.0.
 #
 #	Refer to the file named License.txt provided with the source,
@@ -27,30 +27,50 @@
 # *****************************************************************************
 #
 #			Version 0.0.1 - 04-01-2016.
+#					0.0.2 - 02-25-2017.
 #
 # *********************************************************************************
 # *********************************************************************************
 
-declare -A lmsllrb_TVTable=()			# treeName = treeUid
+declare    lmslib_lmsLLRBTree="0.0.2"	# library version number
 
-declare    lmsllrb_TVUid=""				# current tree uid (after lookup)
-declare    lmsllrb_TVName=""			# current tree name
-declare    lmsllrb_TVRoot=""			# current tree root
+# *****************************************************************************
 
-declare    lmsllrb_TVNode=""			# temporary node for key search/insertion
+declare -A lmsLLRB_tTable=()					# treeName = treeUid
+declare -A lmsLLRB_nTable						# lmsLLRB_nTable[key]=UID
 
-declare    lmsllrb_TVStack="TreeStack"	# name of the recursion stack
-declare    lmsllrb_TVStackUid=""		# name of the recursion stack
+declare    lmsLLRB_tUid=""						# current tree uid (after lookup)
+declare    lmsLLRB_tName=""						# current tree name
+declare    lmsLLRB_tRoot=""						# current tree root
+
+declare    lmsLLRB_tNode=""						# temporary node for key search/insertion
+
+declare    lmsLLRB_tStack="lmsLLRB_tRecurse"	# name of the recursion stack
+declare    lmsLLRB_tStackUid=""					# name of the recursion stack
+
+# *****************************************************************************
 
 #
 #	Each tree structure will have the following variables automatically declared:
 #
-#declare	lmsllrb_TVRoot_UID			# the key for the root node
-#declare	lmsllrb_TVNodes_UID			# number of nodes in the tree
+#declare	lmsLLRB_tRoot_UID			# the key for the root node
+#declare	lmsLLRB_tNodes_UID			# number of nodes in the tree
+
+# *****************************************************************************
+
+declare -a lmsLLRB_nField=( 'key' 'data' 'left' 'right' 'color' 'uid' )
+
+declare -r lmsLLRB_nRED=1
+declare -r lmsLLRB_nBLACK=0
+
+declare -r lmsLLRB_nLEFT=1
+declare -r lmsLLRB_nRIGHT=0
+
+declare    lmsLLRB_nVarKey=""
 
 # ***********************************************************************************************************
 #
-#	llrbTreeCreate
+#	lmsLLRBtCreate
 #
 #		Create a new llrb tree and initialize the entries
 #
@@ -61,31 +81,31 @@ declare    lmsllrb_TVStackUid=""		# name of the recursion stack
 #		non-zero = error code
 #
 # *********************************************************************************
-function llrbTreeCreate()
+function lmsLLRBtCreate()
 {
-	lmsllrb_TVName=$1
-	lmsllrb_TVUid=""
+	lmsLLRB_tName=$1
+	lmsLLRB_tUid=""
 
-	llrbTreeLookup "${lmsllrb_TVName}" lmsllrb_TVUid
+	lmsLLRBtLookup "${lmsLLRB_tName}" lmsLLRB_tUid
 	if [[ $? -ne 1 ]]
 	then
-		lmsErrorQWrite $LINENO NodeCreate "Node '${lmsllrb_TVName}' already exists, uid = '${lmsllrb_TVUid}'"
+		lmsErrorQWrite $LINENO NodeCreate "Node '${lmsLLRB_tName}' already exists, uid = '${lmsLLRB_tUid}'"
 		return 1
 	fi
 
-	lmsUIdUnique lmsllrb_TVUid
+	lmsUIdUnique lmsLLRB_tUid
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeCreate "Unable to get Unique id"
 		return $?
 	fi
 
-	lmsllrb_TVTable["${lmsllrb_TVName}"]="$lmsllrb_TVUid"
+	lmsDynaSetAt ${lmsLLRB_tTable} "${lmsLLRB_tName}" "$lmsLLRB_tUid"
 
-	lmsDeclareStr "lmsllrb_TVRoot_${lmsllrb_TVUid}" "0"
-	llrbTreeRoot "$lmsllrb_TVName"
+	lmsDeclareStr "lmsLLRB_tRoot_${lmsLLRB_tUid}" "0"                     ############################## what?
+	lmsLLRBtRoot "$lmsLLRB_tName"
 
-	lmsStackCreate $lmsllrb_TVStack lmsllrb_TVStackUid
+	lmsStackCreate $lmsLLRB_tStack lmsLLRB_tStackUid
 	if [[ $? -ne 0 ]]
 	then
 		return 1
@@ -96,7 +116,7 @@ function llrbTreeCreate()
 
 # ***********************************************************************************************************
 #
-#	llrbTreeCreateNode
+#	lmsLLRBtCreateN
 #
 #		Create a new (temporary) node
 #
@@ -108,41 +128,32 @@ function llrbTreeCreate()
 #		non-zero = error code
 #
 # *********************************************************************************
-function llrbTreeCreateNode()
+function lmsLLRBtCreateN()
 {
 	llkey="${1}"
 	lldata=${2:-0}
 
 	local llUid=""
 
-	llUid=$( llrbNodeLookup "${llkey}" )
-	if [[ $? -eq 1 ]]
-	then
-		llrbNodeSet ${llkey} "data" "${lldata}"
-		if [[ $? -ne 0 ]]
-		then
-			lmsErrorQWrite $LINENO TreeKeynode "Unable to create node for '${llkey}'."
-			return 1
-		fi
+	lmsLLRBnLookup "${llkey}" llUid
+	[[ $? -eq 0 ]] ||
+	 {
+		lmsLLRBnSet ${llkey} "data" "${lldata}"
+		[[ $? -eq 0 ]] || return 1
 
-		lmsErrorQReset	  # ignore node errors, such as 'not found' before it was created
+#		lmsErrorQReset	  # ignore node errors, such as 'not found' before it was created
 		return 2
-	fi
+	 }
 
-	llrbNodeCreate "${llkey}" llUid "${lldata}"
-	if [[ $? -ne 0 ]]
-	then
-		lmsErrorQWrite $LINENO TreeKeynode "Unable to create node for '${llkey}'."
-		return 1
-	fi
-
-	lmsErrorQReset		# ignore node errors, such as 'not found' before it was created
+	lmsLLRBnCreate "${llkey}" llUid "${lldata}"
+	[[ $? -eq 0 ]] || return 1
+	
 	return 0
 }
 
 # ***********************************************************************************************************
 #
-#	llrbTreeLookup
+#	lmsLLRBtLookup
 #
 #		get the llrbTree key uid
 #
@@ -157,21 +168,21 @@ function llrbTreeCreateNode()
 #		1 = not found in table, uid is invalid
 #
 # *********************************************************************************
-function llrbTreeLookup()
+function lmsLLRBtLookup()
 {
 	local llrbTName="${1}"
 
-	[[ -z "${llrbTreeTable[$llrbTName]}" ]] && return 1
+	[[ -z "${lmsLLRBtTable[$llrbTName]}" ]] && return 1
 
-	lmsllrb_TVName="$llrbTName"
-	lmsllrb_TVUid="$llrbTreeTable[$llrbTName]"
-	lmsllrb_TVRoot="$lmsllrb_TVRoot_$lmsllrb_TVUid"
+	lmsLLRB_tName="$llrbTName"
+	lmsLLRB_tUid="$lmsLLRBtTable[$llrbTName]"
+	lmsLLRB_tRoot="$lmsLLRB_tRoot_${lmsLLRB_tUid}"
 
 	if [[ -n "${2}" ]]
 	then
-		eval ${2}="'$lmsllrb_TVUid'"
+		lmsDeclareStr ${2} "${lmsLLRB_tUid}"
 	else
-		echo "$lmsllrb_TVUid"
+		echo "$lmsLLRB_tUid"
 	fi
 
 	return 0
@@ -179,7 +190,7 @@ function llrbTreeLookup()
 
 # *********************************************************************************
 #
-#	llrbTreeRoot
+#	lmsLLRBtRoot
 #
 #		Set the root value for the selected tree
 #
@@ -193,17 +204,17 @@ function llrbTreeLookup()
 #		1 = error occurred
 #
 # *********************************************************************************
-function llrbTreeRoot()
+function lmsLLRBtRoot()
 {
-	local lltree="${1:-$lmsllrb_TVName}"
+	local lltree="${1:-$lmsLLRB_tName}"
 	local llroot="${2}"
 	local llUid
 
 	if [[ -n "$llroot" ]]
 	then
-		eval "lmsllrb_TVRoot_${lmsllrb_TVUid}='${llroot}'"
+		eval "lmsLLRB_tRoot_${lmsLLRB_tUid}='${llroot}'"
 	else
-		eval 'lmsllrb_TVRoot=$'"{lmsllrb_TVRoot_$lmsllrb_TVUid}"
+		eval 'lmsLLRB_tRoot=$'"{lmsLLRB_tRoot_$lmsLLRB_tUid}"
 	fi
 
 	return 0
@@ -214,7 +225,7 @@ function llrbTreeRoot()
 
 # *********************************************************************************
 #
-#	llrbTreeFlipColors
+#	lmsLLRBtFlipC
 #
 #		Flip the colors of the node and it's 2 children (if they exist)
 #
@@ -226,13 +237,13 @@ function llrbTreeRoot()
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTreeFlipColors()
+function lmsLLRBtFlipC()
 {
 	local llnode="$1"
 	local llchild
 	local llcolor
 
-	llrbNode_Field $llnode "color" llcolor
+	lmsLLRBn_Field $llnode "color" llcolor
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeFlipColors "Unable to get color for '$llnode'."
@@ -240,14 +251,14 @@ function llrbTreeFlipColors()
 	fi
 
 	let llcolor=($llcolor+1)%2
-	llrbNode_Field $llnode "color" llcolor $llcolor
+	lmsLLRBn_Field $llnode "color" llcolor $llcolor
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeFlipColors "Unable to set color for '$llnode'."
 		return 1
 	fi
 
-	llrbNode_Field $llnode "left" llchild
+	lmsLLRBn_Field $llnode "left" llchild
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeFlipColors "Unable to get left child for '$llnode'."
@@ -256,7 +267,7 @@ function llrbTreeFlipColors()
 
 	if [[ "${llchild}" != "0" ]]
 	then
-		llrbNode_Field $llchild "color" llcolor
+		lmsLLRBn_Field $llchild "color" llcolor
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeFlipColors "Unable to get color for '$llchild'."
@@ -265,7 +276,7 @@ function llrbTreeFlipColors()
 
 		let llcolor=($llcolor+1)%2
 
-		llrbNode_Field $llchild "color" llcolor $llcolor
+		lmsLLRBn_Field $llchild "color" llcolor $llcolor
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeFlipColors "Unable to set color for '$llchild'."
@@ -273,7 +284,7 @@ function llrbTreeFlipColors()
 		fi
 	fi
 
-	llrbNode_Field $llnode "right" llchild
+	lmsLLRBn_Field $llnode "right" llchild
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeFlipColors "Unable to get right child for '$llnode'."
@@ -282,7 +293,7 @@ function llrbTreeFlipColors()
 
 	if [[ "${llchild}" != "0" ]]
 	then
-		llrbNode_Field $llchild "color" llcolor
+		lmsLLRBn_Field $llchild "color" llcolor
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeFlipColors "Unable to get color of right child of '$llchild'."
@@ -290,7 +301,7 @@ function llrbTreeFlipColors()
 		fi
 
 		let llcolor=($llcolor+1)%2
-		llrbNode_Field $llchild "color" llcolor $llcolor
+		lmsLLRBn_Field $llchild "color" llcolor $llcolor
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeFlipColors "Unable to set color of right child of '$llchild'."
@@ -303,7 +314,7 @@ function llrbTreeFlipColors()
 
 # *********************************************************************************
 #
-#	llrbTreeInsert
+#	lmsLLRBtInsert
 #
 #		Insert the node into the tree defined by the root, then balance the tree.
 #
@@ -316,7 +327,7 @@ function llrbTreeFlipColors()
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTreeInsert()
+function lmsLLRBtInsert()
 {
 	local llkey="${1}"
 	local lldata="${2}"
@@ -324,36 +335,31 @@ function llrbTreeInsert()
 	local llroot
 	local llnode
 
-	llrbNodeCreate "$llkey" llnode "$lldata"
-	if [[ $? -ne 0 ]]
-	then
-		lmsErrorQWrite $LINENO TreeInsert "Unable to create node for '${llkey}'"
-		return 1
-	fi
-lmsConioDisplay "$( llrbNodeToString $llnode )"
+	lmsLLRBnCreate "$llkey" llnode "$lldata"
+	[[ $? -eq 0 ]] || return 1
 
-	llrbTreeInsertNode $llnode $lmsllrb_TVRoot llroot
+	lmsLLRBtInsertN $llnode $lmsLLRB_tRoot llroot
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeInsert "Unable to insert node '${llkey}' into the tree"
 		return 1
 	fi
 
-echo "set $llroot color: $lmsllrb_NodeBLACK"
-lmsConioDisplay "$( llrbNodeToString $llroot )"
+echo "set $llroot color: $lmsLLRB_nBLACK"
+lmsConioDisplay "$( lmsLLRBnTS $llroot )"
 
 errorQueueDisplay 1 0 EndOfTest
 
-	llrbNode_Field $llroot "color" $lmsllrb_NodeBLACK
+	lmsLLRBn_Field $llroot "color" $lmsLLRB_nBLACK
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeInsert "Unable to set '${llroot}' color"
 		return 1
 	fi
 
-echo "llroot: $llroot, lmsllrb_TVName = $lmsllrb_TVName"
-	llrbTreeRoot "$lmsllrb_TVName" "$llroot"
-echo "lmsllrb_TVRoot: $lmsllrb_TVRoot"
+echo "llroot: $llroot, lmsLLRB_tName = $lmsLLRB_tName"
+	lmsLLRBtRoot "$lmsLLRB_tName" "$llroot"
+echo "lmsLLRB_tRoot: $lmsLLRB_tRoot"
 
 	return 0
 }
@@ -387,7 +393,7 @@ echo "lmsllrb_TVRoot: $lmsllrb_TVRoot"
 
 # *********************************************************************************
 #
-#	llrbTreeInsertNode
+#	lmsLLRBtInsertN
 #
 #		Insert the node into the tree defined by the root, then balance the tree.
 #
@@ -401,7 +407,7 @@ echo "lmsllrb_TVRoot: $lmsllrb_TVRoot"
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTreeInsertNode()
+function lmsLLRBtInsertN()
 {
 	local llnode=$1
 	local llroot=$2
@@ -412,23 +418,23 @@ function llrbTreeInsertNode()
 	local lldata
 
 lmsConioDisplay "Insert Node: llnode: $llnode"
-lmsConioDisplay " $( llrbNodeToString $llnode ) "
+lmsConioDisplay " $( lmsLLRBnTS $llnode ) "
 
 	if [[ "${llroot}" == "0" ]]
 	then
 		x="uid"
-		llrbNode_Field "$llnode" $x llbranch
+		lmsLLRBn_Field "$llnode" $x llbranch
 
 errorQueueDisplay 1 1 EndOfTest
 
 		lmsConioDisplay "InsertNode copy -- $llnode to $llbranch"
 
-		llrbNode_Field $llroot 'left' "0"
-		llrbNode_Field $llroot 'right' "0"
-		llrbNode_Field $llroot 'color' $lmsllrb_NodeBLACK
+		lmsLLRBn_Field $llroot 'left' "0"
+		lmsLLRBn_Field $llroot 'right' "0"
+		lmsLLRBn_Field $llroot 'color' $lmsLLRB_nBLACK
 
 lmsConioDisplay "Root: $llroot"
-lmsConioDisplay "$( llrbNodeToString $llroot )"
+lmsConioDisplay "$( lmsLLRBnTS $llroot )"
 
 		eval "${3}='${llroot}'"
 		return 0
@@ -436,10 +442,10 @@ lmsConioDisplay "$( llrbNodeToString $llroot )"
 
 echo "NodeCompare $llnode with $llroot"
 
-	llrbNodeCompare $llnode $llroot
+	lmsLLRBnCompare $llnode $llroot
 	if [[ $? -lt 0  || $? -gt 2 ]]
 	then
-		lmsErrorQWrite $LINENO TreeInsertNode "llrbNodeCompare returned '$?'."
+		lmsErrorQWrite $LINENO TreeInsertNode "lmsLLRBnCompare returned '$?'."
 		return 1
 	fi
 
@@ -447,17 +453,17 @@ echo "NodeCompare $llnode with $llroot"
 
 	if [ $llresult -eq 0 ]
 	then
-		lldata=$( llrbNodeGet "$llnode" "key" )
+		lldata=$( lmsLLRBnGet "$llnode" "key" )
 		if [[ $? -ne 0 ]]
 		then
-			lmsErrorQWrite $LINENO TreeInsertNode "llrbNodeGet failed for '$llnode'."
+			lmsErrorQWrite $LINENO TreeInsertNode "lmsLLRBnGet failed for '$llnode'."
 			return 1
 		fi
 
-		llrbNodeSet $llroot "key" $lldata
+		lmsLLRBnSet $llroot "key" $lldata
 		if [[ $? -ne 0 ]]
 		then
-			lmsErrorQWrite $LINENO TreeInsertNode "llrbNodeSet failed for '$llroot'."
+			lmsErrorQWrite $LINENO TreeInsertNode "lmsLLRBnSet failed for '$llroot'."
 			return 1
 		fi
 	else
@@ -473,7 +479,7 @@ echo "NodeCompare $llnode with $llroot"
 		#
 		# ##################################################################
 
-		llrbTree_PushNodes "$llnode" "$llroot"
+		lmsLLRBt_PushN "$llnode" "$llroot"
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeInsertNode "Unable to push '$llnode' and '$llroot' on the stack."
@@ -487,39 +493,39 @@ echo "NodeCompare $llnode with $llroot"
 			llbranch="left"
 		fi
 
-		llchild=$( llrbNodeGet "$llroot" "$llbranch" )
+		llchild=$( lmsLLRBnGet "$llroot" "$llbranch" )
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeInsertNode "Unable to get $branch child of '$llroot'."
 			return 1
 		fi
 
-		llrbTreeInsertNode $llchild $llnode llchild
+		lmsLLRBtInsertN $llchild $llnode llchild
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeInsertNode "Unable to insert '$llchild' node as child of '$llnode'."
 			return 1
 		fi
 
-		llrbTree_PopNodes llnode llroot
+		lmsLLRBt_PopN llnode llroot
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeInsertNode "Unable to pop '$llnode' and '$llroot' from the stack."
 			return 1
 		fi
 
-		llrbNodeSet $llroot "$llbranch" $llchild
+		lmsLLRBnSet $llroot "$llbranch" $llchild
 		if [[ $? -ne 0 ]]
 		then
-			lmsErrorQWrite $LINENO TreeInsertNode "llrbNodeSet failed for '$llroot'."
+			lmsErrorQWrite $LINENO TreeInsertNode "lmsLLRBnSet failed for '$llroot'."
 			return 1
 		fi
 	fi
 
-	llrbTreeFixUp $llroot llroot
+	lmsLLRBtFixUp $llroot llroot
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeInsertNode "llrbTreeFixUp failed for '$llroot'."
+		lmsErrorQWrite $LINENO TreeInsertNode "lmsLLRBtFixUp failed for '$llroot'."
 		return 1
 	fi
 
@@ -530,7 +536,7 @@ echo "NodeCompare $llnode with $llroot"
 
 # *********************************************************************************
 #
-#	llrbTreeFixUp
+#	lmsLLRBtFixUp
 #
 #		Balance the tree and fix up the colors on the way up the tree.
 #
@@ -544,21 +550,21 @@ echo "NodeCompare $llnode with $llroot"
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTreeFixUp()
+function lmsLLRBtFixUp()
 {
 	local llnode=$1
 	local lldelete=${2:-0}
 
 	local llcolor
 
-	local llchild=$( llrbNodeGet $llnode "right" )
+	local llchild=$( lmsLLRBnGet $llnode "right" )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeFixUp "llrbNodeGet failed to get 'right' child for '$llnode'."
+		lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBnGet failed to get 'right' child for '$llnode'."
 		return 1
 	fi
 
-	llcolor=$( llrbTreeIsRedNode $llnode )
+	llcolor=$( lmsLLRBtIsRed $llnode )
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeFixUp "llrbIsRed failed to get 'right' child for '$llnode'."
@@ -567,66 +573,66 @@ function llrbTreeFixUp()
 
 	if [[ $llcolor -eq $llrbNode_Red ]]
 	then
-		llchild=$( llrbNodeGet $llnode "left" )
+		llchild=$( lmsLLRBnGet $llnode "left" )
 		if [[ $? -ne 0 ]]
 		then
-			lmsErrorQWrite $LINENO TreeFixUp "llrbNodeGet failed to get 'left' child for '$llnode'."
+			lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBnGet failed to get 'left' child for '$llnode'."
 			return 1
 		fi
 	fi
 
-	llcolor=$( llrbTreeIsRedNode $llchild )
+	llcolor=$( lmsLLRBtIsRed $llchild )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeFixUp "llrbTreeIsRedNode failed to get child for '$llchild'."
+		lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBtIsRed failed to get child for '$llchild'."
 		return 1
 	fi
 
 	let llcolor=($llcolor+1)%2
 	let llcolor+=$lldelete
 
-	if (( ( $lldelete -eq 1) )) || (( ( $llcolor -eq $lmsllrb_NodeBLACK ) ))
+	if (( ( $lldelete -eq 1) )) || (( ( $llcolor -eq $lmsLLRB_nBLACK ) ))
 	then
-		llrbTreeRotateLeft $llnode llnode
+		lmsLLRBtRotateL $llnode llnode
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeFixUp "llrbRotateLeft failed to rotate '$llnode'."
 			return 1
 		fi
 
-		llchild=$( llrbNodeGet $llnode "left" )
+		llchild=$( lmsLLRBnGet $llnode "left" )
 		if [[ $? -ne 0 ]]
 		then
-			lmsErrorQWrite $LINENO TreeFixUp "llrbNodeGet failed to load left child of '$llnode'."
+			lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBnGet failed to load left child of '$llnode'."
 			return 1
 		fi
 
-		llcolor=$( llrbTreeIsRedNode $llchild )
+		llcolor=$( lmsLLRBtIsRed $llchild )
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeFixUp "llrbIsRedNode failed to get color for '$llnode'."
 			return 1
 		fi
 
-		if [[ $llcolor -eq $lmsllrb_NodeRED ]]
+		if [[ $llcolor -eq $lmsLLRB_nRED ]]
 		then
-			llchild=$( llrbNodeGet $llchild "left" )
+			llchild=$( lmsLLRBnGet $llchild "left" )
 			if [[ $? -ne 0 ]]
 			then
-				lmsErrorQWrite $LINENO TreeFixUp "llrbNodeGet failed to get left child for '$llchild'."
+				lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBnGet failed to get left child for '$llchild'."
 				return 1
 			fi
 
-			llcolor=$( llrbTreeIsRedNode $llchild )
+			llcolor=$( lmsLLRBtIsRed $llchild )
 			if [[ $? -ne 0 ]]
 			then
-				lmsErrorQWrite $LINENO TreeFixUp "llrbTreeIsRedNode failed for '$llchild'."
+				lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBtIsRed failed for '$llchild'."
 				return 1
 			fi
 
-			if [[ $llcolor -eq $lmsllrb_NodeRED ]]
+			if [[ $llcolor -eq $lmsLLRB_nRED ]]
 			then
-				llrbTreeRotateRight $llnode llnode
+				lmsLLRBtRotateR $llnode llnode
 				if [[ $? -ne 0 ]]
 				then
 					lmsErrorQWrite $LINENO TreeFixUp "llrbRotateRight failed to rotate '$llnode'."
@@ -636,42 +642,42 @@ function llrbTreeFixUp()
 		fi
 	fi
 
-	llchild=$( llrbNodeGet $llnode "left" )
+	llchild=$( lmsLLRBnGet $llnode "left" )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeFixUp "llrbNodeGet failed to load left child of '$llnode'."
+		lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBnGet failed to load left child of '$llnode'."
 		return 1
 	fi
 
-	llcolor=$( llrbTreeIsRedNode $llchild )
+	llcolor=$( lmsLLRBtIsRed $llchild )
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO TreeFixUp "llrbIsRedNode failed to get color for '$llnode'."
 		return 1
 	fi
 
-	if [[ $llcolor -eq $lmsllrb_NodeRED ]]
+	if [[ $llcolor -eq $lmsLLRB_nRED ]]
 	then
-		llchild=$( llrbNodeGet $llnode "right" )
+		llchild=$( lmsLLRBnGet $llnode "right" )
 		if [[ $? -ne 0 ]]
 		then
-			lmsErrorQWrite $LINENO TreeFixUp "llrbNodeGet failed to load right child of '$llnode'."
+			lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBnGet failed to load right child of '$llnode'."
 			return 1
 		fi
 
-		llcolor=$( llrbTreeIsRedNode $llchild )
+		llcolor=$( lmsLLRBtIsRed $llchild )
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeFixUp "llrbIsRedNode failed to get color for '$llchild'."
 			return 1
 		fi
 
-		if [[ $llcolor -eq $lmsllrb_NodeRED ]]
+		if [[ $llcolor -eq $lmsLLRB_nRED ]]
 		then
-			llrbTreeFlipColors $llnode
+			lmsLLRBtFlipC $llnode
 			if [[ $? -ne 0 ]]
 			then
-				lmsErrorQWrite $LINENO TreeFixUp "llrbTreeFlipColors failed to get color for '$llnode'."
+				lmsErrorQWrite $LINENO TreeFixUp "lmsLLRBtFlipC failed to get color for '$llnode'."
 				return 1
 			fi
 		fi
@@ -683,7 +689,7 @@ function llrbTreeFixUp()
 
 # *********************************************************************************
 #
-#	llrbTreeIsRedNode
+#	lmsLLRBtIsRed
 #
 #		Check if the node is 'red'
 #
@@ -695,14 +701,14 @@ function llrbTreeFixUp()
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTreeIsRedNode()
+function lmsLLRBtIsRed()
 {
 	local llkey=$1
 	local llcolor=0
 
 	if [[ "$llkey" != "0" ]]
 	then
-		llcolor=$( llrbNodeGet "$llkey" "color" )
+		llcolor=$( lmsLLRBnGet "$llkey" "color" )
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO TreeModifyNode "Unable to get color from node '${llkey}' for tree '${llrbTName}'."
@@ -715,7 +721,7 @@ function llrbTreeIsRedNode()
 
 # *********************************************************************************
 #
-#	llrbTreeRotateLeft
+#	lmsLLRBtRotateL
 #
 #		Rotate the current to the left
 #
@@ -729,59 +735,59 @@ function llrbTreeIsRedNode()
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTreeRotateLeft()
+function lmsLLRBtRotateL()
 {
 	local llnode=$1
 	local llroot
 	local llchild
 	local llcolor
 
-	llroot=$( llrbNodeGet $llnode "right" )
+	llroot=$( lmsLLRBnGet $llnode "right" )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateLeft failed to get RIGHT for '$llnode'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateL failed to get RIGHT for '$llnode'."
 		return 1
 	fi
 
-	llchild=$( llrbNodeGet $llroot "left" )
+	llchild=$( lmsLLRBnGet $llroot "left" )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateLeft failed to get left child for '$llroot'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateL failed to get left child for '$llroot'."
 		return 1
 	fi
 
-	llrbNodeSet $llnode "left" $llchild
+	lmsLLRBnSet $llnode "left" $llchild
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateLeft failed to get left child for '$llchild'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateL failed to get left child for '$llchild'."
 		return 1
 	fi
 
-	llrbNodeSet $llroot "left" $llnode
+	lmsLLRBnSet $llroot "left" $llnode
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateLeft failed to get left child for '$llroot'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateL failed to get left child for '$llroot'."
 		return 1
 	fi
 
-	llcolor=$( llrbNodeGet $llnode "color" )
+	llcolor=$( lmsLLRBnGet $llnode "color" )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateLeft failed to get left child for '$llroot'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateL failed to get left child for '$llroot'."
 		return 1
 	fi
 
-	llrbNodeSet $llroot "color" $llcolor
+	lmsLLRBnSet $llroot "color" $llcolor
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateLeft failed to get left child for '$llroot'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateL failed to get left child for '$llroot'."
 		return 1
 	fi
 
-	llrbNodeSet $llnode "color" $lmsllrb_NodeRED
+	lmsLLRBnSet $llnode "color" $lmsLLRB_nRED
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateLeft failed to get left child for '$llroot'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateL failed to get left child for '$llroot'."
 		return 1
 	fi
 
@@ -792,7 +798,7 @@ function llrbTreeRotateLeft()
 
 # *********************************************************************************
 #
-#	llrbTreeRotateRight
+#	lmsLLRBtRotateR
 #
 #		Rotate the current to the right
 #
@@ -806,59 +812,59 @@ function llrbTreeRotateLeft()
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTreeRotateRight()
+function lmsLLRBtRotateR()
 {
 	local llnode=$1
 	local llroot
 	local llchild
 	local llcolor
 
-	llroot=$( llrbNodeGet $llnode "left" )
+	llroot=$( lmsLLRBnGet $llnode "left" )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateRight failed to get LEFT for '$llnode'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateR failed to get LEFT for '$llnode'."
 		return 1
 	fi
 
-	llchild=$( llrbNodeGet $llroot "right" )
+	llchild=$( lmsLLRBnGet $llroot "right" )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateRight failed to get RIGHT for '$llroot'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateR failed to get RIGHT for '$llroot'."
 		return 1
 	fi
 
-	llrbNodeSet $llnode "left" $llchild
+	lmsLLRBnSet $llnode "left" $llchild
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateRight failed to set LEFT for '$llnode'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateR failed to set LEFT for '$llnode'."
 		return 1
 	fi
 
-	llrbNodeSet $llroot "right" $llnode
+	lmsLLRBnSet $llroot "right" $llnode
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateRight failed to set IGHT for '$llnode'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateR failed to set IGHT for '$llnode'."
 		return 1
 	fi
 
-	llcolor=$( llrbNodeGet $llnode "color" )
+	llcolor=$( lmsLLRBnGet $llnode "color" )
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateRight failed to get COLOR for '$llnode'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateR failed to get COLOR for '$llnode'."
 		return 1
 	fi
 
-	llrbNodeSet $llroot "color" $llcolor
+	lmsLLRBnSet $llroot "color" $llcolor
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateRight failed to get COLOR for '$llnode'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateR failed to get COLOR for '$llnode'."
 		return 1
 	fi
 
-	llrbNodeSet $llnode "color" $lmsllrb_NodeRED
+	lmsLLRBnSet $llnode "color" $lmsLLRB_nRED
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO TreeRotate "llrbTreeRotateRight failed to get COLOR for '$llnode'."
+		lmsErrorQWrite $LINENO TreeRotate "lmsLLRBtRotateR failed to get COLOR for '$llnode'."
 		return 1
 	fi
 
@@ -871,7 +877,7 @@ function llrbTreeRotateRight()
 
 # *********************************************************************************
 #
-#	llrbTree_PushNodes
+#	lmsLLRBt_PushN
 #
 #		Push the node and root names onto the recursion stack
 #
@@ -884,22 +890,22 @@ function llrbTreeRotateRight()
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTree_PushNodes()
+function lmsLLRBt_PushN()
 {
 	local pNode="$1"
 	local pRoot="$2"
 
-	lmsStackWrite $lmsllrb_TVStack "$pNode"
+	lmsStackWrite $lmsLLRB_tStack "$pNode"
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO PushNodes "llrbTree_PushNodes failed to get LEFT for '$llnode'."
+		lmsErrorQWrite $LINENO PushNodes "lmsLLRBt_PushN failed to get LEFT for '$llnode'."
 		return 1
 	fi
 
-	lmsStackWrite $lmsllrb_TVStack "$pRoot"
+	lmsStackWrite $lmsLLRB_tStack "$pRoot"
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO PushNodes "llrbTree_PushNodes failed to get LEFT for '$llnode'."
+		lmsErrorQWrite $LINENO PushNodes "lmsLLRBt_PushN failed to get LEFT for '$llnode'."
 		return 1
 	fi
 
@@ -908,7 +914,7 @@ function llrbTree_PushNodes()
 
 # *********************************************************************************
 #
-#	llrbTree_PopNodes
+#	lmsLLRBt_PopN
 #
 #		Pop the root and node names from the recursion stack
 #
@@ -921,26 +927,26 @@ function llrbTree_PushNodes()
 #		1 = error code
 #
 # *********************************************************************************
-function llrbTree_PopNodes()
+function lmsLLRBt_PopN()
 {
 	local pNode=$1
 	local pRoot=$2
 
 	local pchild
 
-	lmsStackRead $lmsllrb_TVStack pchild
+	lmsStackRead $lmsLLRB_tStack pchild
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO PopNodes "llrbTree_PopNodes failed to POP 'llroot' from the stack."
+		lmsErrorQWrite $LINENO PopNodes "lmsLLRBt_PopN failed to POP 'llroot' from the stack."
 		return 1
 	fi
 
 	eval "${pRoot}='${pchild}'"
 
-	lmsStackRead $lmsllrb_TVStack pchild
+	lmsStackRead $lmsLLRB_tStack pchild
 	if [[ $? -ne 0 ]]
 	then
-		lmsErrorQWrite $LINENO PopNodes "llrbTree_PopNodes failed to POP 'llnodes' from the stack."
+		lmsErrorQWrite $LINENO PopNodes "lmsLLRBt_PopN failed to POP 'llnodes' from the stack."
 		return 1
 	fi
 
@@ -949,6 +955,4 @@ function llrbTree_PopNodes()
 	return 0
 }
 
-# *********************************************************************************
-# *********************************************************************************
 

@@ -56,8 +56,8 @@ lmsDmpVar()
 
 		while IFS= read -r line
 		do
-    		    printf "%s% 5u : %s%s\n" ${lmsclr_Red} $lineNumber "$line" ${lmsclr_NoColor}
-		    let lineNumber+=1
+    		printf "%s% 5u : %s%s\n" ${lmsclr_Red} $lineNumber "$line" ${lmsclr_NoColor}
+			let lineNumber+=1
 		done
 	}
 	
@@ -123,8 +123,8 @@ lmsDmpVarCli()
 	# *******************************************************
 
 	lmsConioDisplay " "
-	lmsConioDisplay "lmscli_ParameterList:         ${lmscli_ParameterList}"
-	lmsConioDisplay "lmscli_ParameterCount:        ${#lmscli_InputParameters[@]}"
+	lmsConioDisplay "lmscli_ParamList:         ${lmscli_ParamList}"
+	lmsConioDisplay "lmscli_ParamCount:        ${#lmscli_InputParam[@]}"
 
 	# *******************************************************
 
@@ -135,7 +135,7 @@ lmsDmpVarCli()
 	then
 		for name in "${lmscli_InputErrors[@]}"
 		do
-			lmsConioDisplay "lmscli_InputErrorCount   ${lmsclr_Red}${lmsclr_Bold}${name}${lmsclr_NoColor} => ${lmscli_InputParameters[$name]}"
+			lmsConioDisplay "lmscli_InputErrorCount   ${lmsclr_Red}${lmsclr_Bold}${name}${lmsclr_NoColor} => ${lmscli_InputParam[$name]}"
 		done
 
 		lmsConioDisplay " "
@@ -143,26 +143,26 @@ lmsDmpVarCli()
 		lmsConioDisplay "lmscli_InputErrors            ***** NO ENTRIES *****"
 	fi
 
-	if [ ${#lmscli_InputParameters[@]} -ne 0 ]
+	if [ ${#lmscli_InputParam[@]} -ne 0 ]
 	then
-		for name in "${!lmscli_InputParameters[@]}"
+		for name in "${!lmscli_InputParam[@]}"
 		do
 			if [[ " ${!lmscli_InputErrors[@]} " =~ "${name}" ]]
 			then
-				lmsConioDisplay "lmscli_InputParameters        ${lmsclr_Red}${name}${lmsclr_NoColor} => ${lmscli_InputParameters[$name]}"
+				lmsConioDisplay "lmscli_InputParam        ${lmsclr_Red}${name}${lmsclr_NoColor} => ${lmscli_InputParam[$name]}"
 			else
-				lmsConioDisplay "lmscli_InputParameters        $name => ${lmscli_InputParameters[$name]}"
+				lmsConioDisplay "lmscli_InputParam        $name => ${lmscli_InputParam[$name]}"
 			fi
 		done
 	else
-		lmsConioDisplay "lmscli_InputParameters        ***** NO ENTRIES *****"
+		lmsConioDisplay "lmscli_InputParam        ***** NO ENTRIES *****"
 	fi
 
 	# *******************************************************
 
 	lmsConioDisplay " "
 	lmsConioDisplay "lmscli_command:               ${lmscli_command}"
-	lmsConioDisplay "lmscli_commandErrors:         ${lmscli_commandErrors}"
+	lmsConioDisplay "lmscli_cmndErrors:         ${lmscli_cmndErrors}"
 	lmsConioDisplay ""
 	
 	if [ ${#lmscli_cmndsValid[@]} -ne 0 ]
@@ -178,23 +178,23 @@ lmsDmpVarCli()
 	# *******************************************************
 
 	lmsConioDisplay " "
-	if [ ${#lmscli_shellParameters[@]} -ne 0 ]
+	if [ ${#lmscli_shellParam[@]} -ne 0 ]
 	then
-		for name in "${!lmscli_shellParameters[@]}"
+		for name in "${!lmscli_shellParam[@]}"
 		do
-			lmsConioDisplay "lmscli_shellParameters        $name => ${lmscli_shellParameters[$name]}"
+			lmsConioDisplay "lmscli_shellParam        $name => ${lmscli_shellParam[$name]}"
 		done
 	else
-		lmsConioDisplay "lmscli_shellParameters        ***** NO ENTRIES *****"
+		lmsConioDisplay "lmscli_shellParam        ***** NO ENTRIES *****"
 	fi
 
 	# *******************************************************
 
 	lmsConioDisplay " "
-	if [ ${#lmscli_shellParameters[@]} -ne 0 ]
+	if [ ${#lmscli_shellParam[@]} -ne 0 ]
 	then
 		local index=0
-		for name in "${!lmscli_shellParameters[@]}"
+		for name in "${!lmscli_shellParam[@]}"
 		do
 			lmsConioDisplay "lmscli_ValidParameters        ${index}  =>  ${name}"
 			(( index+=1 ))

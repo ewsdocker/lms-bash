@@ -6,16 +6,14 @@ lmsscr_Version="0.0.1"						# script version
 #
 # test files
 #
-lmsvar_errors="$etcDir/errorCodes.xml"
-lmsvar_help="$etcDir/testHelp.xml"			# path to the help information file
+lmsvar_errors="$dirEtc/errorCodes.xml"
+lmsvar_help="$dirEtc/testHelp.xml"			# path to the help information file
 
 #
 # test vars
 #
 lmstst_guid=""
 lmstst_nsuid=""
-
-lmstst_logDir="/var/local/log/lms-test/"
 
 lmstst_result=0
 

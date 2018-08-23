@@ -257,7 +257,7 @@ function lmsRDomPrint()
 
 # ****************************************************************************
 #
-#	lmsRlmsDomRRead
+#	lmsRDomRead
 #
 # 		Reads the DOM entity, parses it into variables and calls the
 #			callback routine to process the entity
@@ -267,7 +267,7 @@ function lmsRDomPrint()
 #		non-zero = error code
 #
 # ****************************************************************************
-function lmsRlmsDomRRead()
+function lmsRDomRead()
 {
 	local xmlData
 	local xmlTagNameFirst
@@ -421,7 +421,7 @@ function lmsRDomParse()
 
 	until ${lmsxml_EOF}
 	do
-		lmsRlmsDomRRead
+		lmsRDomRead
 		eval ${lmsxml_callback}
 	done
 
@@ -447,6 +447,7 @@ function lmsRDomParse()
 function lmsRDomCallback()
 {
 	lmsxml_callback=${1}
+echo "lmsRDomCallback: $lmsxml_callback"
 
 	[[ -z "${lmsxml_callback}" ]] &&
 	 {

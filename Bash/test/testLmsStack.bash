@@ -7,7 +7,7 @@
 # ***************************************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.1
+# @version 0.1.2
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -30,29 +30,27 @@
 #				0.0.3 - 06-27-2016.
 #				0.1.0 - 01-14-2017.
 #				0.1.1 - 01-24-2017.
+#				0.1.2 - 02-23-2017.
 #
 # ***************************************************************************************************
 # ***************************************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
-
-. $libDir/lmsDomTs.bash
-
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsStack"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
-# *****************************************************************************
-#
-#   Global variables - modified by program flow
-#
-# *****************************************************************************
+
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+. $dirLib/lmsDomTS.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
 # *****************************************************************************
 
-lmsscr_Version="0.1.1"					# script version
+lmsscr_Version="0.1.2"					# script version
 
 declare    lmstst_stackName="lmstst_nameStack"
 declare    lmstst_stackUid=""
@@ -72,7 +70,7 @@ declare -a lmstst_names=( global production configuration database )
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -677,8 +675,8 @@ function testLmsBuildStack()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -883,6 +881,6 @@ testLmsStackDestroy $lmstst_stackName
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

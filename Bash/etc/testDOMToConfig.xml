@@ -16,7 +16,7 @@
 		<declare name="optHelp"	       type="integer">0</declare>
 		<declare name="optHost"        type="string" >localhost</declare>
 		<declare name="optLog"         type="integer">1</declare>
-		<declare name="optLogDir"      type="string" >/var/local/log/lms-test/</declare>
+		<declare name="optLogDir"      type="string" >/var/local/log/LMS/Bash/0.1.1/test</declare>
 		<declare name="optLogName"     type="string" >testDOMToConfig.log</declare>
 		<declare name="optNoReset"     type="integer">0</declare>
 		<declare name="optOverride"    type="integer">0</declare>
@@ -24,20 +24,20 @@
 		<declare name="optQueueErrors" type="integer">0</declare>
 		<declare name="optSilent"      type="integer">0</declare>
 
-		<declare name="shellParameters" type="associative" />
+		<declare name="shellParam" type="associative" />
 
-		<declare parent="shellParameters" type="element" name="batch"    >optBatch</declare>
-		<declare parent="shellParameters" type="element" name="debug"    >optDebug</declare>
-		<declare parent="shellParameters" type="element" name="display"  >optDisplay</declare>
-		<declare parent="shellParameters" type="element" name="help"     >optHelp</declare>
-		<declare parent="shellParameters" type="element" name="host"     >optHost</declare>
-		<declare parent="shellParameters" type="element" name="log"      >optLog</declare>
-		<declare parent="shellParameters" type="element" name="logdir"   >optLogDir</declare>
-		<declare parent="shellParameters" type="element" name="logname"  >optLogName</declare>
-		<declare parent="shellParameters" type="element" name="noreset"  >optNoReset</declare>
-		<declare parent="shellParameters" type="element" name="override" >optOverride</declare>
-		<declare parent="shellParameters" type="element" name="prod"     >optProduction</declare>
-		<declare parent="shellParameters" type="element" name="queue"    >optQueueErrors</declare>
-		<declare parent="shellParameters" type="element" name="quiet"    >optSilent</declare>
+		<declare parent="shellParam" type="element" name="batch"    >optBatch</declare>
+		<declare parent="shellParam" type="element" name="debug"    >optDebug</declare>
+		<declare parent="shellParam" type="element" name="display"  >optDisplay</declare>
+		<declare parent="shellParam" type="element" name="help"     >optHelp</declare>
+		<declare parent="shellParam" type="element" name="host"     >optHost</declare>
+		<declare parent="shellParam" type="element" name="log"      >optLog</declare>
+		<declare parent="shellParam" type="element" name="logdir"   >optLogDir</declare>
+		<declare parent="shellParam" type="element" name="logname"  >optLogName</declare>
+		<declare parent="shellParam" type="element" name="noreset"  >optNoReset</declare>
+		<declare parent="shellParam" type="element" name="override" >optOverride</declare>
+		<declare parent="shellParam" type="element" name="prod"     >optProduction</declare>
+		<declare parent="shellParam" type="element" name="queue"    >optQueueErrors</declare>
+		<declare parent="shellParam" type="element" name="quiet"    >optSilent</declare>
 	</declarations>
 </lms>

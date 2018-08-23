@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.0
+# @version 0.1.1
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -28,23 +28,29 @@
 #		Version 0.0.1 - 06-09-2016.
 #				0.0.2 - 01.09-2017.
 #				0.1.0 - 01-29-2017.
+#				0.1.1 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
-
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsHelp"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-lmsscr_Version="0.1.0"				# script version
+. testlib/installDirs.bash
 
-lmsvar_help="$etcDir/helpTest.xml"	# path to the help file
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.1.1"				# script version
+
+#lmsvar_help="$dirEtc/helpTest.xml"	# path to the help file
+lmsvar_help="$dirEtc/lmsInstallHelp.xml"	# path to the help file
 
 # *****************************************************************************
 # *****************************************************************************
@@ -54,7 +60,7 @@ lmsvar_help="$etcDir/helpTest.xml"	# path to the help file
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -68,11 +74,13 @@ function testLmsHelpInit()
 {
 	lmsConioDisplay ""
 	lmsConioDisplay "lmsHelpInit '${1}'"
+	lmsConioDisplay ""
 	
-	lmsHelpInit ${1}
+	lmsHelpInit "${1}"
 	[[ $? -eq 0 ]] ||
 	{
-		lmsConioDisplay "lmsHelp initialize failed: error = $?, result = $lmshlp_error"
+        xError=$?
+		lmsConioDisplay "lmsHelp initialize failed: error = $xError, result = $lmshlp_error"
 		testDumpExit "lmshlp_"
 	}
 	
@@ -122,8 +130,8 @@ function testLmsHelpToStr()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -132,6 +140,8 @@ lmsScriptFileName $0
 #
 # *****************************************************************************
 # *****************************************************************************
+
+lmscli_optDebug=0
 
 testLmsHelpInit "${lmsvar_help}"
 
@@ -143,6 +153,6 @@ testLmsHelpToStrV
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

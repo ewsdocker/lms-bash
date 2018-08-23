@@ -59,19 +59,19 @@ function compareNodes()
 	local nodeData="left node"
 	local nodeUID=""
 
-	llrbNodeCreate "${leftnodeName}" nodeUID "${nodeData}"
+	lmsLLRBnCreate "${leftnodeName}" nodeUID "${nodeData}"
 
 	local rightnodeName="$2"
 
 	nodeData="right node"
 	nodeUID=""
 
-	llrbNodeCreate "${rightnodeName}" nodeUID "${nodeData}"
+	lmsLLRBnCreate "${rightnodeName}" nodeUID "${nodeData}"
 
-	rname=$( llrbNodeGet $rightnodeName 'key' )
-	lname=$( llrbNodeGet $leftnodeName  'key' )
+	rname=$( lmsLLRBnGet $rightnodeName 'key' )
+	lname=$( lmsLLRBnGet $leftnodeName  'key' )
 
-	llrbNodeCompare $rightnodeName $leftnodeName
+	lmsLLRBnCompare $rightnodeName $leftnodeName
 	case $? in
 
 		0)	lmsConioDisplay "$rightnodeName = $leftnodeName"

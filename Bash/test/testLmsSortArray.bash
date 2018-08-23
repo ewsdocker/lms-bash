@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.0
+# @version 0.1.1
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -27,23 +27,27 @@
 #
 #			Version 0.0.1 - 03-14-2016.
 #					0.1.0 - 01-30-2017.
+#					0.1.1 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-
-. $testlibDir/stdLibs.bash
-. $libDir/lmsSortArray.bash
-
-. $testlibDir/cliOptions.bash
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsSortArray"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-lmsscr_Version="0.1.0"			# script version
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+. $dirLib/lmsSortArray.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.1.1"			# script version
 
 # *****************************************************************************
 # *****************************************************************************
@@ -53,7 +57,7 @@ lmsscr_Version="0.1.0"			# script version
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -127,8 +131,8 @@ function testBubbleSort()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 #lmsHelpInit ${lmsvar_help}
 
@@ -172,11 +176,11 @@ testSortedList "${lmstst_buffer}"
 
 lmsConioDisplay "***********************************************"
 lmsConioDisplay ""
-lmsConioDisplay " NEW BUBBLE SORT: a c 'z y' b 3 5"
+lmsConioDisplay " NEW BUBBLE SORT: a c \"z y\" 3 5"
 lmsConioDisplay ""
 
 #lmssrt_array=()
-lmstst_sortList="a c 'z y' b 3 5"
+lmstst_sortList="a c \"z y\" b 3 5"
 
 testBubbleSort "$lmstst_sortList" lmstst_buffer
 testSortedList "${lmstst_buffer}"
@@ -209,6 +213,6 @@ testSortedList "${lmstst_buffer}"
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

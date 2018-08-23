@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.0
+# @version 0.1.1
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -29,24 +29,28 @@
 #					0.0.2 - 09-15-2016.
 #					0.0.3 - 12-27-2016.
 #					0.1.0 - 02-09-2017.
+#					0.1.1 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
-
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsLog"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-declare    lmsscr_Version="0.1.0"	# script version
+. testlib/installDirs.bash
 
-declare    lmstst_logName="/var/local/log/lms-test/testLmsLog.log"
-declare    lmstst_Declarations="$etcDir/lms-testLmsLog.xml"
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+declare    lmsscr_Version="0.1.1"	# script version
+
+declare    lmstst_Declarations="$dirEtc/lms-testLmsLog.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -56,8 +60,8 @@ declare    lmstst_Declarations="$etcDir/lms-testLmsLog.xml"
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
-. $testlibDir/testUtilities.bash
+. $dirAppLib/testDump.bash
+. $dirAppLib/testUtilities.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -77,8 +81,8 @@ declare    lmstst_Declarations="$etcDir/lms-testLmsLog.xml"
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -119,6 +123,6 @@ lmsLogClose
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

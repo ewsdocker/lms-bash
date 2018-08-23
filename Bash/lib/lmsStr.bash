@@ -179,7 +179,15 @@ function lmsStrSplit()
 	local -a strSplit=()
 	local    option=""
 
-	lmsStrExplode "${1}" ${4:-"="} strSplit
+	lmsStrExplode ${1} ${4:-"="} strSplit
+	[[ ${#strSplit[@]} -ne 2 ]] &&
+	 {
+		lmsDeclareStr ${2} "${1}"
+		[[ $? -eq 0 ]] || return $?
+
+		lmsDeclareStr ${3} ""
+		return $?
+	 }
 
 	lmsDeclareStr ${2} "${strSplit[0]}"
 	[[ $? -eq 0 ]] || return 1

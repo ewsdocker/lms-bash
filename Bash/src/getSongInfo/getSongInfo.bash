@@ -10,7 +10,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 1.1.4
+# @version 1.1.5
 # @copyright © 2014, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package getSongInfo
@@ -29,38 +29,13 @@
 # *****************************************************************************
 
 declare    lmsapp_name="getSongInfo"
-declare    lmslib_release="0.1.0"
+declare    lmslib_release="0.1.1"
 
 declare -i lmscli_optProduction=0
 
 # *****************************************************************************
 
-if [[ ${lmscli_optProduction} -eq 1 ]]
-then
-	dirRoot="/usr/local"
-
-	dirBash="${dirRoot}/share/LMS/Bash/${lmslib_release}"
-	dirAppLog="/var/local/log/LMS/Bash/${lmslib_release}"
-
-	dirAppSrc="${dirBash}"
-
-	dirEtc="${dirRoot}/etc/LMS/Bash/${lmslib_release}"
-	dirLib="${dirRoot}/lib/LMS/Bash/${lmslib_release}"
-else
-
-	dirRoot=${PWD%"/$lmslib_release"*}
-
-	dirBash="${dirRoot}/${lmslib_release}"
-	dirAppLog="/var/local/log/LMS/Bash/${lmslib_release}/test"
-
-	dirAppSrc="${dirBash}/src"
-
-	dirEtc="${dirBash}/etc"
-	dirLib="${dirBash}/lib"
-fi
-
-dirSource="${dirAppSrc}/${lmsapp_name}"
-dirAppLib="${dirAppSrc}/appLib"
+. ../appLib/installDirs.bash
 
 # *****************************************************************************
 
@@ -70,11 +45,13 @@ dirAppLib="${dirAppSrc}/appLib"
 
 # *****************************************************************************
 
-lmsscr_Version="1.1.4"									# script version
+lmsscr_Version="1.1.5"									# script version
 
 lmsvar_errors="$dirEtc/errorCodes.xml"
 lmsvar_help="$dirEtc/getSongHelp.xml"					# path to the help information file
 lmsvar_SongOptions="$dirEtc/getSongOptions.xml"
+
+lmsapp_declare="$dirEtc/getSongOptions.xml"			# script declarations
 
 # *****************************************************************************
 #
@@ -127,48 +104,10 @@ declare -i lmssng_titleAllowed=0	# 1 if ok to output an xterm title
 declare	   lmssng_helpMessage=""	#
 declare -i lmssng_currentHour=0
 
-declare -i lmssng_abort=0			#
 declare    lmssng_stackName="lmssng_songStack"
 
 declare -a lmssng_reply=()			#
 declare	   lmssng_buffer=""
-
-# *****************************************************************************
-#
-#	displayHelp
-#
-#		Display the contents of the help file
-#
-#	parameters:
-#		none
-#
-#	returns:
-#		0 = no errors
-#		non-zero = error code
-#
-# *****************************************************************************
-function displayHelp()
-{
-	[[ -z "${lmssng_helpMessage}" ]] &&
-	 {
-		lmsHelpInit ${lmsvar_help}
-		[[ $? -eq 0 ]] ||
-		 {
-			lmsConioDebug $LINENO "HelpError" "Help initialize '${lmsvar_help}' failed: $?"
-			return 1
-		 }
-
-		lmssng_helpMessage=$( lmsHelpToStr )
-		[[ $? -eq 0 ]] ||
-		 {
-			lmsConioDebug $LINENO "HelpError" "lmsHelpToStr failed: $?"
-			return 2
-		 }
-	 }
-
-	lmsConioDisplay "${lmssng_helpMessage}"
-	return 0
-}
 
 function updateOption()
 {
@@ -189,14 +128,14 @@ function updateOption()
 		return 0
 	 }
 
-	lmsCliValidParameter $parameter
+	lmsCliValid $parameter
 	[[ $? -eq 0 ]] ||
 	{
 		lmsConioDisplay "Unknown parameter '${parameter}'"
 		return 0
 	}
 
-	lmsCliLookupParameter $parameter option
+	lmsCliLookup $parameter option
 	[[ $? -eq 0 ]] ||
 	 {
 		lmsConioDisplay "Unknown option '${parameter}'"
@@ -759,15 +698,6 @@ function processSong()
 # *****************************************************************************
 function processCliOptions()
 {
-	lmsCliParseParameter
-	[[ $? -eq 0 ]] || lmsConioDebugExit $LINENO "ParamError" "cliParameterParse failed"
-	
-	[[ ${lmscli_Errors} -eq 0 ]] &&
-	 {
-		lmsCliApplyInput
-		[[ $? -eq 0 ]] || lmsConioDebugExit $LINENO "ParamError" "lmsCliApplyInput failed." 
-	 }
-
 	[[ "${lmscli_optAlter}" != "-" ]] &&
 	 {
 		[[ "${lmscli_optAlter:0:1}" == "-" ]] && lmscli_optAlter=""
@@ -799,7 +729,7 @@ lmsScriptFileName $0
 # *****************************************************************************
 
 lmsDomCLoad ${lmsvar_SongOptions} "$lmssng_stackName" 0
-[[ $? -eq 0 ]] || lmsConioDebugExit $LINENO "DomError" "lmsDomCLoad failed."
+[[ $? -eq 0 ]] || lmsConioDebugExit $LINENO "DomError" "lmsDomCLoad failed loading '${lmssng_stackName}'."
 
 processCliOptions
 
@@ -817,7 +747,7 @@ lmssng_titleAllowed=$(lmsUtilCommandExists "xtitle")
 
 # *******************************************************
 
-while [[ ${lmssng_abort} -eq 0 ]]
+while [[ ${lmsapp_abort} -eq 0 ]]
 do
 	waitPlaying
 

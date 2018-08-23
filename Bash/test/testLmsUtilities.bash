@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.3
+# @version 0.0.4
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -28,21 +28,27 @@
 #		Version 0.0.1 - 08-26-2016.
 #				0.0.2 - 12-17-2016.
 #				0.0.3 - 02-08-2017.
+#				0.0.4 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
 
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
-
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsDynNode"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-lmsscr_Version="0.0.3"					# script version
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.0.4"					# script version
 
 # *****************************************************************************
 # *****************************************************************************
@@ -52,8 +58,8 @@ lmsscr_Version="0.0.3"					# script version
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
-. $testlibDir/testUtilities.bash
+. $dirAppLib/testDump.bash
+. $dirAppLib/testUtilities.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -389,8 +395,8 @@ function testWmList()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -434,7 +440,7 @@ lmsConioDisplay ""
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************
 

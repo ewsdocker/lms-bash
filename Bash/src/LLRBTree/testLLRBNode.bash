@@ -76,7 +76,7 @@ nodeUID=""
 
 lmsConioDisplay "Creating node: ${nodeName}"
 
-llrbNodeCreate "${nodeName}" nodeUID "${nodeData}"
+lmsLLRBnCreate "${nodeName}" nodeUID "${nodeData}"
 
 lmsConioDisplay "Created node: ${nodeName} = $nodeUID"
 lmsConioDisplay ""
@@ -86,7 +86,7 @@ lmsConioDisplay ""
 lmsConioDisplay "Getting 'data' element from node: ${nodeName}"
 lmsConioDisplay ""
 
-nodeData=$( llrbNodeGet "$nodeName" "data" )
+nodeData=$( lmsLLRBnGet "$nodeName" "data" )
 if [ $? -eq 1 ]
 then
 	lmsConioDisplay "Unable to get the requested node: ${nodeName}"
@@ -94,7 +94,7 @@ else
 	lmsConioDisplay "NodeData: $nodeData"
 fi
 
-lmsConioDisplay "$( llrbNodeToString $nodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $nodeName )"
 
 lmsConioDisplay ""
 lmsConioDisplay "*******************************************************"
@@ -103,13 +103,13 @@ lmsConioDisplay ""
 # **********************************************************************
 
 nodeData="No longer the maid"
-llrbNodeSet "${nodeName}" "data" "${nodeData}"
+lmsLLRBnSet "${nodeName}" "data" "${nodeData}"
 if [ $? -ne 0 ]
 then
 	lmsConioDisplay "Unable to set the requested node: ${nodeName}"
 fi
 
-nodeData=$( llrbNodeGet "${nodeName}" "data" )
+nodeData=$( lmsLLRBnGet "${nodeName}" "data" )
 if [ $? -eq 1 ]
 then
 	lmsConioDisplay "Unable to get the requested node: ${nodeName}"
@@ -117,7 +117,7 @@ else
 	lmsConioDisplay "NodeData: $nodeData"
 fi
 
-lmsConioDisplay "$( llrbNodeToString $nodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $nodeName )"
 
 # **********************************************************************
 
@@ -127,21 +127,21 @@ rightnodeUID=""
 
 lmsConioDisplay "Creating node: ${rightnodeName}"
 
-llrbNodeCreate "${rightnodeName}" rightnodeUID "${rightnodeData}"
+lmsLLRBnCreate "${rightnodeName}" rightnodeUID "${rightnodeData}"
 
-llrbNodeSet $nodeName "right" $rightnodeName
+lmsLLRBnSet $nodeName "right" $rightnodeName
 
-lmsConioDisplay "$( llrbNodeToString $nodeName )"
-lmsConioDisplay "$( llrbNodeToString $rightnodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $nodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $rightnodeName )"
 
 # **********************************************************************
 
 lmsConioDisplay "Copying node: $nodeName to ${rightnodeName}"
 
-llrbNodeCopy "$rightnodeName" "$nodeName"
+lmsLLRBnCopy "$rightnodeName" "$nodeName"
 
-lmsConioDisplay "$( llrbNodeToString $nodeName )"
-lmsConioDisplay "$( llrbNodeToString $rightnodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $nodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $rightnodeName )"
 
 # **********************************************************************
 
@@ -151,7 +151,7 @@ lmsConioDisplay ""
 
 llfield="key"
 llkey=""
-llrbNode_Field "$rightnodeName" $llfield llkey
+lmsLLRBn_Field "$rightnodeName" $llfield llkey
 
 lmsConioDisplay "Changing '$llfield' in '$rightnodeName' to " -n
 
@@ -159,7 +159,7 @@ llkey=""
 llkeyNew="Mark"
 lmsConioDisplay "'$llkeyNew'"
 
-llrbNode_Field "$rightnodeName" $llfield llkey "$llkeyNew"
+lmsLLRBn_Field "$rightnodeName" $llfield llkey "$llkeyNew"
 
 lmsConioDisplay "Key: $llkey"
 
@@ -167,7 +167,7 @@ lmsConioDisplay ""
 lmsConioDisplay "*******************************************************"
 lmsConioDisplay ""
 
-lmsConioDisplay "$( llrbNodeToString $rightnodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $rightnodeName )"
 
 lmsConioDisplay ""
 lmsConioDisplay "*******************************************************"
@@ -179,7 +179,7 @@ llkey=""
 llkeyNew="Zandar"
 lmsConioDisplay "'$llkeyNew'"
 
-llrbNode_Field "$rightnodeName" $llfield llkey "$llkeyNew"
+lmsLLRBn_Field "$rightnodeName" $llfield llkey "$llkeyNew"
 
 lmsConioDisplay "Key: $llkey"
 
@@ -187,7 +187,7 @@ lmsConioDisplay ""
 lmsConioDisplay "*******************************************************"
 lmsConioDisplay ""
 
-lmsConioDisplay "$( llrbNodeToString $rightnodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $rightnodeName )"
 
 lmsConioDisplay ""
 lmsConioDisplay "*******************************************************"
@@ -204,7 +204,7 @@ lmsConioDisplay ""
 
 llfield="left"
 llkey=""
-llrbNode_Field "$rightnodeName" $llfield llkey
+lmsLLRBn_Field "$rightnodeName" $llfield llkey
 
 lmsConioDisplay "Changing '$llfield' in '$rightnodeName' to " -n
 
@@ -212,7 +212,7 @@ llkey=""
 llkeyNew="Zandar"
 lmsConioDisplay "'$llkeyNew'"
 
-llrbNode_Field "$rightnodeName" $llfield llkey "$llkeyNew"
+lmsLLRBn_Field "$rightnodeName" $llfield llkey "$llkeyNew"
 
 lmsConioDisplay "Key: $llkey"
 
@@ -220,7 +220,7 @@ lmsConioDisplay ""
 lmsConioDisplay "*******************************************************"
 lmsConioDisplay ""
 
-lmsConioDisplay "$( llrbNodeToString $rightnodeName )"
+lmsConioDisplay "$( lmsLLRBnTS $rightnodeName )"
 
 lmsConioDisplay ""
 lmsConioDisplay "*******************************************************"
@@ -229,10 +229,10 @@ lmsConioDisplay ""
 # **********************************************************************
 
 lmsConioDisplay "Deleting llrbNode = ${rightnodeName}"
-llrbNodeDelete "${rightnodeName}"
+lmsLLRBnDelete "${rightnodeName}"
 
 lmsConioDisplay "Deleting llrbNode = ${nodeName}"
-llrbNodeDelete "${nodeName}"
+lmsLLRBnDelete "${nodeName}"
 
 #dumpNameTable
 

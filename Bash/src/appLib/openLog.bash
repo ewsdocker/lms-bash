@@ -9,8 +9,7 @@ lmsapp_logName="${dirAppLog}/${lmsapp_name}.log"
 lmsLogOpen "${lmsapp_logName}" "new"
 [[ $? -eq 0 ]] ||
  {
-	lmscli_optSilent=0
-	lmsConioDisplay "Unable to open log file: '${lmsapp_logName}'"
-	exit 1
+	lmsConioDebugL "LogOpenError" "Unable to open log file: '${lmsapp_logName}'"
+	return 1
  }
 

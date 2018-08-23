@@ -47,7 +47,7 @@ declare    lmscli_Validate=0
 #		xmlErrorCodes = path to the errorCode.xml file
 #
 #	returns:
-#		$? = value returned from lmsCliParseParameter function.
+#		$? = value returned from lmsCliParse function.
 #
 # **************************************************************************
 lmsStartupInit()
@@ -65,7 +65,7 @@ lmsStartupInit()
 	 {
 		[[ ${lmsdyna_valid} -eq 0  &&  ${lmserr_result} -eq 0  ]] ||
 		 {
-			lmsConioDebug $LINENO "XmlError" "Unable to load error codes from ${xmlErroCodes} : $?."
+			lmsConioDebugL "DebugError" "Unable to load error codes from ${xmlErroCodes} : $?."
 			return 1
 		 }
 	 }
@@ -73,15 +73,11 @@ lmsStartupInit()
 #	lmsErrorQInit "errorQueueStack"
 #	[[ $? -eq 0 ]] ||
 #	 {
-#		lmsConioDebug $LINENO "QueueInit"  "Unable to initialize error queue: $?"
+#		lmsConioDebugL "QueueInit"  "Unable to initialize error queue: $?"
 #		return 3
 #	 }
 
-	if [ ${#lmscli_ParameterBuffer} -eq 0 ]
-	then
-		lmscli_command="help"
-	fi
-
+	[[ ${#lmscli_ParamBuffer} -eq 0 ]] && lmscli_command="help"
 	return 0
 }
 

@@ -6,7 +6,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.0
+# @version 0.1.2
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -30,38 +30,40 @@
 #					0.0.4 - 09-07-2016.
 #					0.1.0 - 01-24-2017.
 #					0.1.1 - 02-12-2017.
+#					0.1.2 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-declare    lmslib_lmsCli="0.1.1"			# library version number
+declare    lmslib_lmsCli="0.1.2"				# library version number
 
 # *****************************************************************************
 
-declare -a lmscli_ParameterBuffer=( "$@" )		# cli parameter array buffer
-declare    lmscli_ParameterList=""			# cli parameter list (string)
-declare    lmscli_ParameterPointer=0			# cli parameter buffer index
+declare -a lmscli_ParamBuffer=( "$@" )			# cli parameter array buffer
+declare    lmscli_ParamList=""					# cli parameter list (string)
+declare    lmscli_ParamPointer=0				# cli parameter buffer index
 
-#declare -a lmscli_cmndsValid=()			# array of valid commands for this object
+declare -a lmscli_cmndsValid=()					# array of valid commands for this object
 
 declare    lmscli_cmnds="lmscli_commands"		# commands
-declare    lmscli_cmndNum=0				# command stack index of the current command
-declare    lmscli_command=""				# cli command
+declare    lmscli_cmndNum=0						# command stack index of the current command
+declare    lmscli_command=""					# cli command
+declare    lmscli_cmndValid=0					#
 
-declare -a lmscli_parsed=()				#
-declare -a lmscli_exploded=()				#
+declare -a lmscli_parsed=()						#
+declare -a lmscli_exploded=()					#
 
-#declare -A lmscli_shellParameters=()			# provided by config file
-declare -A lmscli_InputParameters=()			# input parameters
+declare -A lmscli_shellParam=()					# provided by config file
+declare -A lmscli_InputParam=()					# input parameters
 declare -a lmscli_InputErrors=()				# input parameter error names
 
-declare -i lmscli_commandErrors=0				# cli command error count
-declare -i lmscli_parameterErrors=0				# cli parameter error count
+declare -i lmscli_cmndErrors=0					# cli command error count
+declare -i lmscli_paramErrors=0					# cli parameter error count
 declare -i lmscli_Errors=0						# number of cli errors detected
 
 # **************************************************************************
 #
-#	lmsCliValidCmnd
+#	lmsCliCmndValid
 #
 #	Returns 0 if the command is valid, 1 if not
 #
@@ -72,10 +74,17 @@ declare -i lmscli_Errors=0						# number of cli errors detected
 #		result = 0 if found, 1 if not found
 #
 # **************************************************************************
-function lmsCliValidCmnd()
+function lmsCliCmndValid()
 {
+	lmscli_cmndValid=0
+
 	[[ ${#lmscli_cmndsValid[@]} -eq 0  ||  -z "${1}" ]] && return 1
- 	[[ " ${lmscli_cmndsValid[@]} " =~ "${1}" ]] && return 0
+ 	[[ "${lmscli_cmndsValid[@]}" =~ "${1}" ]] && 
+ 	 {
+ 		lmscli_cmndValid=1
+ 		return 0
+ 	 }
+ 
 	return 2
 }
 
@@ -99,13 +108,13 @@ function lmsCliCmndNew()
 
 	lmscli_command="${1}"
 
-	lmsCliCmndValid ${lmscli_command}
-	[[ $? -eq 0 ]] || return 2
+	lmsCliCmndValid "${lmscli_command}"
+	[[ $? -eq 0 ]] || return 0
 	
 	lmsStackSize ${lmscli_cmnds} lmscli_cmndNum
 	[[ $? -eq 0 ]] || return 3
 
-	lmsClinName ${lmscli_command} ${lmscli_cmndNum} lmsclin_node
+	lmsClinName "${lmscli_command}" ${lmscli_cmndNum} lmsclin_node
 
 	lmsUtilVarExists ${lmsclin_node}
 	[[ $? -eq 0 ]] || return 4
@@ -117,12 +126,11 @@ function lmsCliCmndNew()
 	[[ $? -eq 0 ]] && return 0
 
 	return 6
-
 }
 
 # **************************************************************************
 #
-#	lmsCliValidParameter
+#	lmsCliValid
 #
 #	Returns 0 if the parameter name is valid, 1 if not
 #
@@ -135,17 +143,17 @@ function lmsCliCmndNew()
 #		2 = requested parameter is invalid
 #
 # **************************************************************************
-function lmsCliValidParameter()
+function lmsCliValid()
 {
 	[[ -z "${1}" ]] && return 1
 
-	[[ ${#lmscli_shellParameters[@]} -gt 0  &&  "${!lmscli_shellParameters[@]}" =~ "${1}" ]] && return 0
+	[[ ${#lmscli_shellParam[@]} -gt 0  &&  "${!lmscli_shellParam[@]}" =~ "${1}" ]] && return 0
 	return 2
 }
 
 # **************************************************************************
 #
-#	lmsCliLookupParameter
+#	lmsCliLookup
 #
 #		Lookup the parameter and set the option name
 #
@@ -158,22 +166,52 @@ function lmsCliValidParameter()
 #		1 = requested parameter is invalid
 #
 # **************************************************************************
-function lmsCliLookupParameter()
+function lmsCliLookup()
 {
 	[[ -z "${1}"  ||  -z "${2}" ]] && return 1
 	
 	local parameter="${1}"
 
-	lmsCliValidParameter "${parameter}"
+	lmsCliValid "${parameter}"
 	[[ $? -eq 0 ]] || return 2
 
-	eval ${2}="'${lmscli_shellParameters[$parameter]}'"
+	lmsDeclareStr ${2} "${lmscli_shellParam[$parameter]}"
+	[[ $? -eq 0 ]] || return 3
+
 	return 0
 }
 
 # **************************************************************************
 #
-#	lmsCliCheckParameter
+#	lmsCliAdd
+#
+#		Add input parameter name and (optional) value
+#
+#	parameters:
+#		pName = parameter name
+#		pValue = (optional) parameter value
+#
+#	returns:
+#		0 = no error
+#		non-zero = error code
+#
+# **************************************************************************
+function lmsCliAdd()
+{
+	[[ -z "${1}" ]] && return 1
+
+	local pName="${1}"
+	local pValue="${2}"
+
+	lmsDeclareArrayEl "lmscli_InputParam" "${pName}" "${pValue}"
+	[[ $? -eq 0 ]] || return 2
+
+	return 0
+}
+
+# **************************************************************************
+#
+#	lmsCliCheck
 #
 #		check input parameter name and value
 #
@@ -186,22 +224,23 @@ function lmsCliLookupParameter()
 #		non-zero = error code
 #
 # **************************************************************************
-function lmsCliCheckParameter()
+function lmsCliCheck()
 {
 	[[ -z "${1}" ]] && return 1
 
-	local pName=${1}
+	local pName="${1}"
 	local pValue="${2}"
 
-	lmsCliValidParameter ${pName}
+	lmsCliValid "${pName}"
 	[[ $? -eq 0 ]] &&
 	 {
-		lmscli_InputParameters[${pName}]="${pValue}"
+		lmsCliAdd "${pName}" "${pValue}"
 		return 0
 	 }
 
 	lmscli_InputErrors[${#lmscli_InputErrors[@]}]="${pName}"
-	lmscli_ParameterErrors=${#lmscli_InputErrors[@]}
+
+	((lmscli_ParamErrors++ ))
 	(( lmscli_Errors++ ))
 
 	return 2
@@ -209,7 +248,7 @@ function lmsCliCheckParameter()
 
 # **************************************************************************
 #
-#	lmsCliSplitParameter
+#	lmsCliSplit
 #
 #		Splits the parameter string into name and value
 #
@@ -220,11 +259,11 @@ function lmsCliCheckParameter()
 #		result = 0 if parameter is valid
 #			   = 1 if parameter is a command
 #			   = 2 if valid parameter format, but parameter is not valid
-#						(the name and value are stored in lmscli_InputParameters first)
+#						(the name and value are stored in lmscli_InputParam first)
 #			   > 2 ==> error code
 #
 # **************************************************************************
-function lmsCliSplitParameter()
+function lmsCliSplit()
 {
 	[[ -z "${1}" ]] && return 1
 
@@ -232,13 +271,13 @@ function lmsCliSplitParameter()
 	local paramValue
 
 	lmsStrSplit "${1}" paramName paramValue
+	[[ $? -eq 0 ]] || return 4
 
 	if [ -z "${paramValue}" ]
 	then
-		lmsCliCmndNew $paramName
-		[[ $? -eq 0 ]] || return 2
+		lmsCliCmndNew "${paramName}"
 	else
-		lmsCliCheckParameter $paramName "$paramValue"
+		lmsCliCheck "${paramName}" "$paramValue"
 		[[ $? -eq 0 ]] || return 3
 	fi
 
@@ -247,55 +286,47 @@ function lmsCliSplitParameter()
 
 # **************************************************************************
 #
-#	lmsCliParseParameter
+#	lmsCliParse
 #
-#		parse the cli parameters in global lmscli_ParameterBuffer array
-#			and store results in lmscli_shellParameters, lmscli_command,
+#		parse the cli parameters in global lmscli_ParamBuffer array
+#			and store results in lmscli_shellParam, lmscli_command,
 #		    lmscli_cmndsValid
 #
 #	parameters:
-#		Check-Validity = 1 to check for valid parameter name
+#		none
 #
 #	returns:
 #		Result = 0 if no error,
 #				 1 if empty parameter buffer,
 #
 # **************************************************************************
-function lmsCliParseParameter()
+function lmsCliParse()
 {
-	[[ ${#lmscli_ParameterBuffer} -eq 0 ]] && return 0
-	lmscli_ParameterList="${lmscli_ParameterBuffer[@]}"
+	[[ ${#lmscli_ParamBuffer} -eq 0 ]] && return 0
 
-	local validate=${1:-"$lmscli_Validate"}
-	
-	lmscli_Errors=0
+	lmscli_ParamList="${lmscli_ParamBuffer[@]}"
+
 	lmscli_InputErrors=()
-	lmscli_InputParameters=()
+	lmscli_InputParam=()
 
-	lmscli_parameterErrors=0
-	lmscli_commandErrors=0
+	lmscli_paramErrors=0
+	lmscli_cmndErrors=0
+	lmscli_Errors=0
 
 	local pString
 
-	for pString in "${lmscli_ParameterBuffer[@]}"
+	for pString in "${lmscli_ParamBuffer[@]}"
 	do
-
-		lmsCliSplitParameter "${pString}" ${validate}
+		lmsCliSplit "${pString}"
 		[[ $? -eq 0 ]] || break
 	done
-
-	[[ "${lmscli_command}" ]] && 
-	 {
-		lmscli_shellParameters["${lmscli_command}"]="${lmscli_cmndsValid}"
-		eval "lmscli_shellParameters[${lmscli_command}]='${lmscli_cmndsValid}'"
-	 }
 
 	return 0
 }
 
 # **************************************************************************
 #
-#	lmsCliApplyInput
+#	lmsCliApply
 #
 #		Apply the pending cliInputParameters
 #
@@ -307,19 +338,19 @@ function lmsCliParseParameter()
 #		non-zero = error code
 #
 # **************************************************************************
-function lmsCliApplyInput()
+function lmsCliApply()
 {
-	[[ ${#lmscli_InputParameters[@]} -eq 0 ]] && return 0
+	[[ ${#lmscli_InputParam[@]} -eq 0 ]] && return 0
 
 	local iName
 	local iOption
 	local iValue
 
-	for iName in "${!lmscli_InputParameters[@]}"
+	for iName in "${!lmscli_InputParam[@]}"
 	do
-		iValue="${lmscli_InputParameters[$iName]}"
+		iValue="${lmscli_InputParam[$iName]}"
 
-		lmsCliLookupParameter $iName iOption
+		lmsCliLookup $iName iOption
 		[[ $? -eq 0 ]] || return 1
 		
 		iOption="lmscli_${iOption}"

@@ -13,11 +13,11 @@
 #
 # *******************************************************
 # *******************************************************
-declare -A lmscli_shellParameters				# cli parameters
+declare -A lmscli_shellParam				# cli parameters
 declare -A lmscli_shellParametersChanged			# copy of cli parameter prior to change (for debug)
 
 declare -i lmscli_Errors=0					# number of cli errors detected
-declare -a lmscli_ParameterBuffer			# cli parameter array buffer
+declare -a lmscli_ParamBuffer			# cli parameter array buffer
 
 # *******************************************************
 # *******************************************************
@@ -50,7 +50,7 @@ applicationVersion="1.0"	# Application version
 # *******************************************************
 # *******************************************************
 
-declare -a lmscli_shellParameters	# cli input parameters
+declare -a lmscli_shellParam	# cli input parameters
 declare -a cliChanged		# original value of changed parameters
 
 # *******************************************************
@@ -95,22 +95,22 @@ displayHelp()
 # *******************************************************
 showChangedParameters()
 {
-	for parameter in "${!lmscli_shellParameters[@]}"
+	for parameter in "${!lmscli_shellParam[@]}"
 	do
 		case ${parameter} in
 
 			l)
-	        	lmsConioDebug "showChangedParameters" "Groups: ${lmscli_shellParameters[$parameter]} changed to ${MOUNTGROUP}"
+	        	lmsConioDebug "showChangedParameters" "Groups: ${lmscli_shellParam[$parameter]} changed to ${MOUNTGROUP}"
             	;;
 
 			# ***********************************************
 
         	d)
-	        	lmsConioDebug "showChangedParameters" "Debug: ${lmscli_shellParameters[$parameter]} changed to ${lmscli_optDebug}"
+	        	lmsConioDebug "showChangedParameters" "Debug: ${lmscli_shellParam[$parameter]} changed to ${lmscli_optDebug}"
         		;;
 
 			q)
-	        	lmsConioDebug "showChangedParameters" "Quiet: ${lmscli_shellParameters[$parameter]} changed to ${lmscli_optSilent}"
+	        	lmsConioDebug "showChangedParameters" "Quiet: ${lmscli_shellParam[$parameter]} changed to ${lmscli_optSilent}"
 	        	;;
 
 			# ***********************************************
@@ -144,7 +144,7 @@ fi
 #
 # *******************************************************
 
-lmscli_ParameterBuffer=( "$@" )
+lmscli_ParamBuffer=( "$@" )
 
 lmscli_Errors=0
 
@@ -153,13 +153,13 @@ do
 	case $1 in
 
 		-l)
-			lmscli_shellParameters[l]=${lmsErrorQueryType}
+			lmscli_shellParam[l]=${lmsErrorQueryType}
             lmsErrorQueryType=$2
             shift
             ;;
 
         -d)
-			lmscli_shellParameters[d]=${lmscli_optDebug}
+			lmscli_shellParam[d]=${lmscli_optDebug}
             lmscli_optDebug=$2
 	    	if [ -e $lmscli_optDebug ]
 	    	then
@@ -175,7 +175,7 @@ do
         	;;
 
 		-q)
-			lmscli_shellParameters[q]=${lmscli_optSilent}
+			lmscli_shellParam[q]=${lmscli_optSilent}
       		lmscli_optSilent=$2
       		if [ -e $lmscli_optSilent ]
 	    	then
@@ -224,7 +224,7 @@ then
 	exit Error_ParamErrors
 fi
 
-if [ ${#lmscli_shellParameters[@]} -ne 0 ]
+if [ ${#lmscli_shellParam[@]} -ne 0 ]
 then
 	showChangedParameters
 fi

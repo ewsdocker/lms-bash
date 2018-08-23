@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- copyright © 2014, 2016. EarthWalk Software. -->
+<!-- copyright © 2014, 2017. EarthWalk Software. -->
 <lms>
 	<ErrorMsgs>
 
@@ -247,6 +247,10 @@
 			<message>Utility Error</message>
 		</ErrorCode>
 
+		<ErrorCode name="LogOpenError">
+			<message>Error opening log file</message>
+		</ErrorCode>
+
 		<ErrorCode name="XmlError">
 			<message>XML Error</message>
 		</ErrorCode>
@@ -259,7 +263,10 @@
 			<message>XPath Error</message>
 		</ErrorCode>
 
-		
+		<ErrorCode name="CDError">
+			<message>CD Error</message>
+		</ErrorCode>
+
 	</ErrorMsgs>
 </lms>
 

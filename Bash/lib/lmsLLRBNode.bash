@@ -1,24 +1,22 @@
-#!/bin/bash
-
 # *********************************************************************************
 # *********************************************************************************
 #
-#   llrbNode.bash
+#   lmsLLRBNode.bash
 #
 #		Left-Leaning Red-Black Tree Node
 #
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.1
-# @copyright © 2016. EarthWalk Software.
+# @version 0.0.2
+# @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
 # @subpackage llrbNode
 #
 # *****************************************************************************
 #
-#	Copyright © 2016. EarthWalk Software
+#	Copyright © 2016, 2017. EarthWalk Software
 #	Licensed under the Academic Free License, version 3.0.
 #
 #	Refer to the file named License.txt provided with the source,
@@ -29,18 +27,11 @@
 # *****************************************************************************
 #
 #			Version 0.0.1 - 02-29-2016.
+#					0.0.2 - 02-25-2017.
 #
 # *********************************************************************************
 # *********************************************************************************
 
-declare -A  lmsllrb_NodeTable		#  lmsllrb_NodeTable[key]=UID
-declare -a 	lmsllrb_NodeFields=( [0]=key [1]=data [2]=left [3]=right [4]=color [5]=uid )
-
-declare -r lmsllrb_NodeRED=1
-declare -r lmsllrb_NodeBLACK=0
-
-declare -r lmsllrb_NodeLEFT=1
-declare -r lmsllrb_NodeRIGHT=0
 
 # *********************************************************************************
 # *********************************************************************************
@@ -58,14 +49,14 @@ declare -r lmsllrb_NodeRIGHT=0
 #		where UID is a (semi) unique identifier assigned to the node
 #			for branching purposes.
 #
-#	The lmsllrb_NodeTable can be used to convert between the UID and the key name
+#	The lmsLLRB_nTable can be used to convert between the UID and the key name
 #
 # *********************************************************************************
 # *********************************************************************************
 
 # *********************************************************************************
 #
-#	llrbNodeCreate
+#	lmsLLRBnCreate
 #
 #		Create a new llrb node array and initialize the entries
 #
@@ -79,53 +70,56 @@ declare -r lmsllrb_NodeRIGHT=0
 #		non-zero = error code
 #
 # *********************************************************************************
-function llrbNodeCreate()
+function lmsLLRBnCreate()
 {
-	local llrbKey="${1}"
-	local llrbResult=$2
-	local llrbData="${3}"
+	[[ -z "${1}" || -z "${2}" ]] && return 1
 
-	local llrbUid
+	local cKey="${1}"
+#	local cResult=$2
+	local cData="${3}"
 
-	while true
-	do
-		llrbNodeLookup "${llrbKey}" llrbUid
-		if [ $? -eq 1 ]
-		then
-    		lmsErrorQWrite $LINENO NodeCreate "Node '${llrbKey}' already exists, uid = '${llrbUid}'"
-			break
-		fi
+	local cUid
 
-		lmsUIdUnique llrbUid
-		if [ $? -eq 0 ]
-		then
-			lmsllrb_NodeTable["${llrbKey}"]="$llrbUid"
-			break
-		fi
+	lmsLLRBnLookup "${cKey}" cUid
+	[[ $? -eq 0 ]] && return 2
 
-   		lmsErrorQWrite $LINENO NodeCreate "Unable to get Unique id"
-		return $?
-	done
+	lmsUIdUnique cUid
+	[[ $? -eq 0 ]] || return 3
 
-	lmsDeclareAssoc "llrbNode_${llrbUid}"
+	lmsLLRB_nTable["${cKey}"]="$cUid"
 
+	local cName="lmsLLRB_n${cUid}"
 
-	lmsDeclareArrayEl "llrbNode_${llrbUid}" "uid"	 "$llrbNode_${llrbUid}"
+	lmsDeclareAssoc "${cName}"
+	[[ $? -eq 0 ]] || return 4
 
-	lmsDeclareArrayEl "llrbNode_${llrbUid}" "key"   "$llrbKey"
-	lmsDeclareArrayEl "llrbNode_${llrbUid}" "data"  "${llrbData}"
-	lmsDeclareArrayEl "llrbNode_${llrbUid}" "left"  0
-	lmsDeclareArrayEl "llrbNode_${llrbUid}" "right" 0
-	lmsDeclareArrayEl "llrbNode_${llrbUid}" "color" $lmsllrb_NodeRED
+	lmsDeclareArrayEl "${cName}" "uid"	 "$lmsLLRB_n${cUid}"
+	[[ $? -eq 0 ]] || return 4
 
-	eval "$llrbResult='$llrbUid'"
+	lmsDeclareArrayEl "${cName}" "key"   "${cKey}"
+	[[ $? -eq 0 ]] || return 4
+
+	lmsDeclareArrayEl "${cName}" "data"  "${cData}"
+	[[ $? -eq 0 ]] || return 4
+
+	lmsDeclareArrayEl "${cName}" "left"  0
+	[[ $? -eq 0 ]] || return 4
+
+	lmsDeclareArrayEl "${cName}" "right" 0
+	[[ $? -eq 0 ]] || return 4
+
+	lmsDeclareArrayEl "${cName}" "color" ${lmsLLRB_nRED}
+	[[ $? -eq 0 ]] || break
+
+	lmsDeclareStr ${2} "${cUid}"
+	[[ $? -eq 0 ]] || return 4
 
 	return 0
 }
 
 # *********************************************************************************
 #
-#	llrbNodeDelete
+#	lmsLLRBnDelete
 #
 #		delete the llrbNode
 #
@@ -134,22 +128,22 @@ function llrbNodeCreate()
 #
 #	returns:
 #		0 = no error
-#		1 = unable to delete (not in the table)
+#		non-zero = error code
 #
 # *********************************************************************************
-function llrbNodeDelete()
+function lmsLLRBnDelete()
 {
 	local llrbNKey="${1}"
 	local llrbNUid
 
-	if [ -z "${lmsllrb_NodeTable[$llrbNKey]}" ]
+	if [ -z "${lmsLLRB_nTable[$llrbNKey]}" ]
 	then
     	lmsErrorQWrite $LINENO NodeDelete "Node '${llrbNKey}' not found."
 		return 1
 	fi
 
-	llrbNUid=${lmsllrb_NodeTable[$llrbNKey]}
-	unset lmsllrb_NodeTable["$llrbNKey"]
+	llrbNUid=${lmsLLRB_nTable[$llrbNKey]}
+	unset lmsLLRB_nTable["$llrbNKey"]
 
 	eval "unset llrbNode_${llrbNUid}"
 
@@ -158,7 +152,7 @@ function llrbNodeDelete()
 
 # *********************************************************************************
 #
-#	llrbNodeGet
+#	lmsLLRBnGet
 #
 #		get the llrbNode element
 #
@@ -171,36 +165,36 @@ function llrbNodeDelete()
 #		value = the value from the requested element (if 'ret' is not supplied)
 #
 #	returns:
-#		0 = not found in table, uid is invalid
-#		1 = found in table, uid is valid
+#		0 = found in table, uid is valid
+#		1 = not found in table, uid is invalid
 #
 # *********************************************************************************
-function llrbNodeGet()
+function lmsLLRBnGet()
 {
-	local lnname=$1
-	local lnelement=$2
+	local gName=$1
+	local gElement=$2
 
-	llrbNodeLookup "${lnname}" llrbUid
+	lmsLLRBnLookup "${gName}" lUid
 	if [ $? -eq 0 ]
 	then
-    	lmsErrorQWrite $LINENO NodeGet "Node '${lnname}' not found."
+    	lmsErrorQWrite $LINENO NodeGet "Node '${gName}' not found."
     	return 1
 	fi
 
 	local element
-	eval 'element=$'"{llrbNode_$llrbUid[$lnelement]}"
+	eval 'element=$'"{llrbNode_$lUid[$gElement]}"
 
 	if [ -n "${3}" ]
 	then
-    	eval ${3}="'${element}'"
+    	eval ${3}="'${gElement}'"
     else
-    	echo "${element}"
+    	echo "${gElement}"
 	fi
 }
 
 # *********************************************************************************
 #
-#	llrbNodeSet
+#	lmsLLRBnSet
 #
 #		set the llrbNode element
 #
@@ -210,29 +204,29 @@ function llrbNodeGet()
 #		value 	= value to store in the node element
 #
 #	returns:
-#		0 = not found in table, uid is invalid
-#		1 = found in table, uid is valid
+#		0 = found in table, uid is valid
+#		1 = not found in table, uid is invalid
 #
 # *********************************************************************************
-function llrbNodeSet()
+function lmsLLRBnSet()
 {
-	local llrbGName=$1
-	local llrbGElement=$2
-	local llrbGValue=${3}
+	local gName=$1
+	local gElement=$2
+	local gValue=${3}
 
-	llrbNodeLookup "${llrbGName}" llrbUid
-	if [ $? -eq 0 ]
-	then
-    	lmsErrorQWrite $LINENO NodeSet "Node '${llrbGName}' not found."
-    	return 1
-	fi
+	local gUid
+	lmsLLRBnLookup "${gName}" gUid
+	[[ $? -eq 0 ]] || return 2
 
-	eval "llrbNode_$llrbUid[${llrbGElement}]='${llrbGValue}'"
+	lmsDeclareArrayEl "lmsLLRB_n$gUid" "${gElement}" "${gValue}"
+	[[ $? -eq 0 ]] || return 3
+
+	return 0
 }
 
 # *********************************************************************************
 #
-#	llrbNodeLookup
+#	lmsLLRBnLookup
 #
 #		get the llrbNode key uid
 #
@@ -241,37 +235,31 @@ function llrbNodeSet()
 #		uid   = place to store the result
 #
 #	returns:
-#		0 = not found in table, uid is invalid
-#		1 = found in table, uid is valid
+#		0 = found in table, uid is valid
+#		non-zero = not found
 #
 # *********************************************************************************
-function llrbNodeLookup()
+function lmsLLRBnLookup()
 {
-	local llrbNKey="${1}"
-	local llrbNUid=$2
+	[[ -z "${1}" || -z "${2}" ]] && return 1
 
-	if [[ ! "${#lmsllrb_NodeTable[@]}" =~ "$llrbNKey" ]]
-	then
-		return 0
-	fi
+	local nKey="${1}"
 
-	llrbNodeVarKey=$llrbNKey
-	llrbNodeVarUid=${lmsllrb_NodeTable[$llrbNKey]}
-	llrbNodeVarName="llrbNode_"${llrbNodeVarUid}
+	[[ ! "${#lmsLLRB_nTable[@]}" =~ "$nKey" ]] && return 0
 
-	if [ -n "${2}" ]
-	then
-		eval ${2}="'$llrbNodeVarUid'"
-	else
-		echo "${llrbNodVarUid}"
-	fi
+	lmsLLRB_nVarKey=$nKey
+	lmsLLRB_nVarUid=${lmsLLRB_nTable[$nKey]}
+	lmsLLRB_nVarName="lmsLLRB_n${lmsLLRB_nVarUid}"
 
-	return 1
+	lmsDeclareStr ${2} "${lmsLLRB_nVarUid}"
+	[[ $? -eq 0 ]] || return 2
+
+	return 0
 }
 
 # *********************************************************************************
 #
-#	llrbNodeToString
+#	lmsLLRBnTS
 #
 #		Return a printable buffer containing data about the node in question
 #
@@ -281,10 +269,10 @@ function llrbNodeLookup()
 #
 #	returns:
 #		0 = no error
-#		1 = error code
+#		non-zero = error code
 #
 # *********************************************************************************
-function llrbNodeToString()
+function lmsLLRBnTS()
 {
 	local llrbSName="${1}"
 	local llrbSBuffer=$2
@@ -296,9 +284,9 @@ function llrbNodeToString()
 	local llrbBuffer
 	printf -v llrbBuffer "Node: %s\n" "$llrbSName"
 
-	for field in "${lmsllrb_NodeFields[@]}"
+	for field in "${lmsLLRB_nFields[@]}"
 	do
-		llrbNodeGet ${llrbSName} ${field} llrbSValue
+		lmsLLRBnGet ${llrbSName} ${field} llrbSValue
 		if [ $? -eq 1 ]
 		then
     		lmsErrorQWrite $LINENO NodeList "Unable to fetch field $field in $llrbSName"
@@ -319,7 +307,7 @@ function llrbNodeToString()
 
 # *********************************************************************************
 #
-#	llrbNodeCopy
+#	lmsLLRBnCopy
 #
 #		Copy the source node to the destination node
 #
@@ -329,48 +317,35 @@ function llrbNodeToString()
 #
 #	returns:
 #		0 = no error
-#		1 = error occured
+#		non-zero = error code
 #
 # *********************************************************************************
-function llrbNodeCopy()
+function lmsLLRBnCopy()
 {
-	local lldestination=$1
-	local llsource=$2
+	local lDest=$1
+	local lSource=$2
 
-	local llrbUid
+	local lUid
 
-	llrbNodeLookup "${llsource}" llrbUid
-	if [ $? -eq 0 ]
-	then
-    	lmsErrorQWrite $LINENO NodeCopy "Source node '${llsource}' not found."
-    	return 1
-	fi
+	lmsLLRBnLookup "${lSource}" lUid
+	[[ $? -eq 0 ]] || return 1
 
-	llrbNodeLookup "${lldestination}" llrbUid
-	if [ $? -eq 0 ]
-	then
-    	lmsErrorQWrite $LINENO NodeCopy "Destination node '${lldestination}' not found."
-    	return 1
-	fi
+	lmsLLRBnLookup "${lDest}" lUid
+	[[ $? -eq 0 ]] || return 2
 
-	for key in "${lmsllrb_NodeFields[@]}}"
+	local lValue
+	local lKey
+
+	for lKey in "${lmsLLRB_nFields[@]}}"
 	do
-		if [[ "$key" != "uid" && "$key" != "key" ]]
-		then
-			value=$( llrbNodeGet $llsource "$key" )
-			if [ $? -ne 0 ]
-			then
-    			lmsErrorQWrite $LINENO NodeCopy "Could not get source node '${llsource}' value."
-				return 1
-			fi
+		[[ "$lKey" != "uid" && "$lKey" != "key" ]] &&
+		 {
+			lValue=$( lmsLLRBnGet $lSource "$lKey" )
+			[[ $? -eq 0 ]] || return 3
 
-			llrbNodeSet $lldestination "$key" "${value}"
-			if [ $? -ne 0 ]
-			then
-    			lmsErrorQWrite $LINENO NodeCopy "Could not set destination node '${lldestination}' value."
-				return 1
-			fi
-		fi
+			lmsLLRBnSet $lDest "$lKey" "${lValue}"
+			[[ $? -eq 0 ]] || return 4
+		 }
 	done
 
 	return 0
@@ -378,7 +353,7 @@ function llrbNodeCopy()
 
 # *********************************************************************************
 #
-#	llrbNodeCompare
+#	lmsLLRBnCompare
 #
 #		Compare the source node to the compare node
 #			(e.g. source < compare)
@@ -386,42 +361,33 @@ function llrbNodeCopy()
 #	parameters:
 #		compare	= the name of the node to compare the source node with
 #		source 	= the node name of the source node to compare
+#		result  = location to store the compare result
 #
 #	returns:
-#		 0 => source = compare
-#		 1 => source > compare
-#		 2 => source < compare
-#		 3 => error
+#		0 = no error
+#		non-zero = error code
 #
 # *********************************************************************************
-function llrbNodeCompare()
+function lmsLLRBnCompare()
 {
-	local llsource="${1}"
-	local llcompare="${2}"
+	local lSource="${1}"
+	local lComp="${2}"
 
-	local llrbUid
+	local lUid
 
 	while true
 	do
-		llrbNodeLookup "${llsource}" llrbUid
-		if [ $? -eq 0 ]
-		then
-    		lmsErrorQWrite $LINENO NodeCompare "Source node '${llsource}' not found."
-    		break
-		fi
+		lmsLLRBnLookup "${lSource}" lUid
+		[[ $? -eq 0 ]] || break
 
-		llrbNodeLookup "${llcompare}" llrbUid
-		if [ $? -eq 0 ]
-		then
-    		lmsErrorQWrite $LINENO NodeCompare "Comparison node '${llcompare}' not found."
-    		break
-		fi
+		lmsLLRBnLookup "${lComp}" lUid
+		[[ $? -eq 0 ]] || break
 
-		llsname=$( llrbNodeGet "${llsource}" "key" )
-		[ $? -ne 0 ] && break
+		llsname=$( lmsLLRBnGet "${lSource}" "key" )
+		[[ $? -eq 0 ]] || break
 
-		llcname=$( llrbNodeGet "${llcompare}" "key" )
-		[ $? -ne 0 ] && break
+		llcname=$( lmsLLRBnGet "${lComp}" "key" )
+		[[ $? -eq 0 ]] || break
 
 		#
 		#  less
@@ -450,7 +416,7 @@ function llrbNodeCompare()
 
 # *********************************************************************************
 #
-#	llrbNode_Field
+#	lmsLLRBn_Field
 #
 #		Set/Get the node key
 #
@@ -461,10 +427,10 @@ function llrbNodeCompare()
 #
 #	Returns:
 #		0 = no error
-#		1 = error occurred
+#		non-zero = error code
 #
 # *********************************************************************************
-function llrbNode_Field()
+function lmsLLRBn_Field()
 {
 	local llnode=$1
 	local llfield=$2
@@ -473,7 +439,7 @@ function llrbNode_Field()
 
 echo "llfield = '$llfield'"
 
-	if ! [[ ${lmsllrb_NodeFields[@]} =~ ${llfield} ]]
+	if ! [[ ${lmsLLRB_nFields[@]} =~ ${llfield} ]]
 	then
 		lmsErrorQWrite $LINENO NodeField "Invalid/unknown field name '${llfield}'."
 		return 1
@@ -481,7 +447,7 @@ echo "llfield = '$llfield'"
 
 	if [[ -n "$llnewValue" ]]
 	then
-		llrbNodeSet $llnode $llfield $llnewValue
+		lmsLLRBnSet $llnode $llfield $llnewValue
 		if [[ $? -ne 0 ]]
 		then
 			lmsErrorQWrite $LINENO NodeField "Unable to set field name '${llfield}' in '$llnode'."
@@ -489,7 +455,7 @@ echo "llfield = '$llfield'"
 		fi
 	fi
 
-	llrbNodeGet $llnode $llfield llvalue
+	lmsLLRBnGet $llnode $llfield llvalue
 	if [[ $? -ne 0 ]]
 	then
 		lmsErrorQWrite $LINENO NodeField "Unable to get value field name '${llfield}' in '$llnode'."

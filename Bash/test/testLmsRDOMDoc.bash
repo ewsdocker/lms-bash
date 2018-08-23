@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.2
+# @version 0.0.3
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -27,22 +27,27 @@
 #
 #		Version 0.0.1 - 06-30-2016.
 #				0.0.2 - 02-10-2017.
+#				0.0.3 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
-. $testlibDir/cliOptions.bash
-
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsRDOMDoc"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-lmsscr_Version="0.0.2"							# script version
-lmstst_Declarations="$etcDir/testVariables.xml"
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.0.3"							# script version
+lmstst_Declarations="$dirEtc/testVariables.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -52,8 +57,8 @@ lmstst_Declarations="$etcDir/testVariables.xml"
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
-. $testlibDir/testUtilities.bash
+. $dirAppLib/testDump.bash
+. $dirAppLib/testUtilities.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -177,8 +182,8 @@ testLmsRDomTable()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -236,13 +241,8 @@ lmsRDomParse ${lmstst_Declarations}
 	lmsConioDebugExit $LINENO "RDomError" "TDOMParseDOM '${lmstst_Declarations}'"
  }
 
-# *******************************************************
+# *****************************************************************************
 
-if [ $lmscli_optDebug -ne 0 ]
-then
-	lmsErrorQDispPop
-fi
+. $dirAppLib/scriptEnd.bash
 
-#lmsConioDebugExit $LINENO "Debug" "end of test" 1
-
-lmsErrorExitScript "EndOfTest"
+# *****************************************************************************

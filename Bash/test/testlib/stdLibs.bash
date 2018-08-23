@@ -3,41 +3,41 @@
 #
 #         version 0.0.2
 #
-. $libDir/lmsXCfg.bash
-. $libDir/lmsCli.bash
-. $libDir/lmsColorDef.bash
-. $libDir/lmsConio.bash
+. $dirLib/lmsXCfg.bash
+. $dirLib/lmsCli.bash
+. $dirLib/lmsColorDef.bash
+. $dirLib/lmsConio.bash
 
-. $libDir/lmsDomC.bash
-. $libDir/lmsDomD.bash
-. $libDir/lmsDomN.bash
-. $libDir/lmsDomR.bash
+. $dirLib/lmsDomC.bash
+. $dirLib/lmsDomD.bash
+. $dirLib/lmsDomN.bash
+. $dirLib/lmsDomR.bash
 
-. $libDir/lmsDmpVar.bash
+. $dirLib/lmsDmpVar.bash
 
-. $libDir/lmsDynSort.bash
-. $libDir/lmsDynNode.bash
-. $libDir/lmsDynArray.bash
+. $dirLib/lmsDynSort.bash
+. $dirLib/lmsDynNode.bash
+. $dirLib/lmsDynArray.bash
 
-. $libDir/lmsError.bash
-. $libDir/lmsErrorQDisp.bash
-. $libDir/lmsErrorQ.bash
+. $dirLib/lmsError.bash
+. $dirLib/lmsErrorQDisp.bash
+. $dirLib/lmsErrorQ.bash
 
-. $libDir/lmsHelp.bash
+. $dirLib/lmsHelp.bash
 
-. $libDir/lmsDeclare.bash
+. $dirLib/lmsDeclare.bash
 
-. $libDir/lmsLog.bash
-. $libDir/lmsLogRead.bash
+. $dirLib/lmsLog.bash
+. $dirLib/lmsLogRead.bash
 
-. $libDir/lmsRDomD.bash
+. $dirLib/lmsRDomD.bash
 
-. $libDir/lmsScriptName.bash
-. $libDir/lmsStack.bash
-. $libDir/lmsStartup.bash
-. $libDir/lmsStr.bash
-. $libDir/lmsUId.bash
-. $libDir/lmsUtilities.bash
-. $libDir/lmsXMLParse.bash
-. $libDir/lmsXPath.bash
+. $dirLib/lmsScriptName.bash
+. $dirLib/lmsStack.bash
+. $dirLib/lmsStartup.bash
+. $dirLib/lmsStr.bash
+. $dirLib/lmsUId.bash
+. $dirLib/lmsUtilities.bash
+. $dirLib/lmsXMLParse.bash
+. $dirLib/lmsXPath.bash
 

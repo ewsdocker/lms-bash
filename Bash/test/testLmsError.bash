@@ -7,7 +7,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.0
+# @version 0.1.2
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -29,20 +29,23 @@
 #					0.0.2 - 03-18-2016.
 #					0.1.0 - 01-11-2017.
 #					0.1.1 - 01-24-2017.
+#					0.1.2 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../../testlib"
+declare    lmsapp_name="testLmsError"
+declare    lmslib_release="0.1.1"
 
-. $testlibDir/installDirs.bash
-. $testlibDir/stdLibs.bash
+# *****************************************************************************
 
-. $libDir/lmsSortArray.bash
+. testlib/installDirs.bash
 
-. $testlibDir/cliOptions.bash
+. $dirAppLib/stdLibs.bash
+. $dirLib/lmsSortArray.bash
 
-. $testlibDir/commonVars.bash
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
 
 # *****************************************************************************
 
@@ -57,7 +60,7 @@ declare lmstst_errorNumber=0
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -77,8 +80,8 @@ declare lmstst_errorNumber=0
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -384,6 +387,6 @@ lmsConioDisplay "lmsErrorCodeList NAME FORMATTED BUFFER"
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

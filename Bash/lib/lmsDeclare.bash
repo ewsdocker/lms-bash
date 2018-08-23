@@ -53,7 +53,7 @@ function lmsDeclareSet()
 {
 	[[ -z "${1}" ]] && return 1
 
-    	local  svValue=${2:-""}
+    local  svValue=${2:-""}
 
 	lmsStrIsInteger "${1}"
 	[[ $? -eq 0 ]] && return 1

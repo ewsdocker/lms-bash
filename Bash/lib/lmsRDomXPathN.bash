@@ -188,13 +188,6 @@ function lmsRDomXPNSet()
 # ******************************************************************************
 function lmsRDomXPNInit()
 {
-	declare -p "lmslib_dynaArray" > /dev/null 2>&1
-	[[ $? -eq 0 ]] &&
-	 {
-		lmsConioDebug $LINENO "RDOMNodeError" "RDOMXPathNode requires the following library: 'lmslib_dynamicArrayFunctions'"
-		return 1
-	 }
-
 	return 0
 }
 

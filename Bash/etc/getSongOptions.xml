@@ -4,7 +4,7 @@
 
 	<declarations name="lmscli_" >
 
-		<declare name="shellParameters" type="associative" />
+		<declare name="shellParam" type="associative" />
 
 		<declare name="optDebug"  type="integer">0</declare>
 		<declare name="optHelp"	  type="integer">0</declare>
@@ -17,16 +17,16 @@
 		<declare name="optSleep"  type="integer">5</declare>
 		<declare name="optReduce" type="integer">1</declare>
 
-		<declare parent="shellParameters" type="element"  name="debug" >optDebug</declare>
-		<declare parent="shellParameters" type="element"  name="help"  >optHelp</declare>
-		<declare parent="shellParameters" type="element"  name="quiet" >optSilent</declare>
+		<declare parent="shellParam" type="element"  name="debug" >optDebug</declare>
+		<declare parent="shellParam" type="element"  name="help"  >optHelp</declare>
+		<declare parent="shellParam" type="element"  name="quiet" >optSilent</declare>
 
-		<declare parent="shellParameters" type="element"  name="base"  >optBase</declare>
-		<declare parent="shellParameters" type="element"  name="run"   >optRun</declare>
-		<declare parent="shellParameters" type="element"  name="play"  >optPlay</declare>
-		<declare parent="shellParameters" type="element"  name="sleep" >optSleep</declare>
-		<declare parent="shellParameters" type="element"  name="alter" >optAlter</declare>
-		<declare parent="shellParameters" type="element"  name="reduce">optReduce</declare>
+		<declare parent="shellParam" type="element"  name="base"  >optBase</declare>
+		<declare parent="shellParam" type="element"  name="run"   >optRun</declare>
+		<declare parent="shellParam" type="element"  name="play"  >optPlay</declare>
+		<declare parent="shellParam" type="element"  name="sleep" >optSleep</declare>
+		<declare parent="shellParam" type="element"  name="alter" >optAlter</declare>
+		<declare parent="shellParam" type="element"  name="reduce">optReduce</declare>
 
 	</declarations>
 

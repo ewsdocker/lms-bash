@@ -55,17 +55,14 @@ function lmsConioDisplay()
 
 	[[ ${lmscli_optSilent} -ne 0 && ${lmscli_optOverride} -eq 0 ]] && return 0
 
-	while [[ true ]]
-	do
-   		[[ $# -ne 2 ]] &&
-   		{
-   			echo "${message}"
-   			break
-   		}
-
+	if [[ $# -ne 2 ]] 
+    then
+   		echo "${message}"
+        return 0
+    else
   		[[ "${noEnter}" == "e" ]] && echo -ne "${message}" || echo -n "${message}"
-  		break
-	done
+        return 0
+	fi
 	
 	[[ ${lmscli_optOverride} -ne 0  &&  ${lmscli_optNoReset} -eq 0 ]] && lmscli_optOverride=0
 
@@ -97,7 +94,7 @@ function lmsConioDebug()
 	local funcOffset=1
 	local funcName=${FUNCNAME[1]}
 
-	[[ "${funcName}" == "lmsConioDebugExit" || "${funcName}" == "lmsLogDebugMessage" ]] && funcOffset=2
+	[[ "${funcName}" == "lmsConioDebugExit" || "${funcName}" == "lmsLogDebugMessage" || "${funcName}" == "lmsConioDebugL" ]] && funcOffset=2
 
 	local lmsscr_Name=$(basename "${BASH_SOURCE[$funcOffset]}" .bash)
 	
@@ -122,6 +119,27 @@ function lmsConioDebug()
 	 }
 
 	return 0
+}
+
+# **************************************************************************
+#
+#    lmsConioDebugL
+#
+#      add calling line number and print debug message, if allowed
+#
+#	parameters:
+#		errorCode = error code
+#		modifier = additional information to supplement the error message
+#
+#	returns:
+#		0 = no error
+#		non-zero = error number
+#
+# **************************************************************************
+function lmsConioDebugL()
+{
+	lmsConioDebug ${BASH_LINENO[0]} ${1} "${2}"
+	return $?
 }
 
 # **************************************************************************

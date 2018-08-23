@@ -7,7 +7,7 @@
 # ***************************************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.2
+# @version 0.1.3
 # @copyright © 2016, 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
@@ -30,24 +30,28 @@
 #					0.1.0 - 01-17-2017.
 #					0.1.1 - 01-23-2017.
 #					0.1.2 - 02-11-2017.
+#					0.1.3 - 02-23-2017.
 #
 # ***************************************************************************************************
 # ***************************************************************************************************
 
-testlibDir="../../testlib"
-
-. $testlibDir/installDirs.bash
-
-. $testlibDir/stdLibs.bash
-
-. $testlibDir/cliOptions.bash
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsCli"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-declare    lmsscr_Version="0.1.2"	# script version
+. testlib/installDirs.bash
 
-declare    lmstst_Declarations="$etcDir/lms-testOptions.xml"
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+declare    lmsscr_Version="0.1.3"	# script version
+
+declare    lmstst_Declarations="$dirEtc/testVariables.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -57,8 +61,8 @@ declare    lmstst_Declarations="$etcDir/lms-testOptions.xml"
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
-. $testlibDir/testUtilities.bash
+. $dirAppLib/testDump.bash
+. $dirAppLib/testUtilities.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -78,8 +82,8 @@ declare    lmstst_Declarations="$etcDir/lms-testOptions.xml"
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -99,38 +103,49 @@ lmsConioDisplay "Loading cli parameters from ${lmstst_Declarations}"
 
 # *****************************************************************************
 
-lmsXCfgLoad ${lmstst_Declarations} "lmsxmlconfig"
-[[ $? -eq 0 ]] || lmsConioDisplay "lmsXCfgLoad '${lmstst_Declarations}'"
+lmsDomCLoad ${lmstst_Declarations} "lmstst_stack" 0
+[[ $? -eq 0 ]] ||
+ {
+	lmsConioDisplay "DomError - lmsDomCLoad failed."
+	testDumpExit "lmsdom_ lmstst_ lmsstk lmscli"
+ }
 
 # *****************************************************************************
 
 
-lmsConioDisplay "Before parsing:"
-lmsConioDisplay ""
-
-testLmsDmpVar "lmscli lmsxcfg_ lmstest_"
-
-lmsCliParseParameter
+lmsCliParse
 [[ $? -eq 0 ]] || lmsConioDisplay "cliParameterParse failed"
+
+[[ ${lmscli_Errors} -eq 0 ]] ||
+ {
+	lmsCli_optDebug=1
+	lmsConioDebugL "CliError" "cliErrors = ${lmscli_Errors}, param = ${lmscli_paramErrors}, cmnd = ${lmscli_cmndErrors}"
+	lmsCli_optDebug=0
+ }
 
 [[ ${lmscli_Errors} -eq 0 ]] &&
  {
-	lmsCliApplyInput
-	[[ $? -eq 0 ]] || lmsConioDisplay "lmsCliApplyInput failed."
+	lmsCliApply
+	[[ $? -eq 0 ]] || lmsConioDisplay "lmsCliApply failed."
  }
 
-lmsConioDisplay ""
-lmsConioDisplay "After parsing:"
-lmsConioDisplay ""
 
-testLmsDmpVar "lmscli lmsxcfg_ lmstest_"
+lmstst_buffer=""
 
 lmsConioDisplay ""
+lmsUtilATS "lmscli_shellParam" lmstst_buffer
+lmsConioDisplay "$lmstst_buffer"
 
-#testDisplayHelp $lmsvar_help
+lmsConioDisplay ""
+lmsUtilATS "lmscli_InputParam" lmstst_buffer
+lmsConioDisplay "$lmstst_buffer"
+
+lmsConioDisplay ""
+testLmsDmpVar "lmscli_"
+lmsConioDisplay ""
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

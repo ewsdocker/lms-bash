@@ -7,15 +7,15 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.1
-# @copyright �� 2017. EarthWalk Software.
+# @version 0.0.2
+# @copyright © 2017. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
 # @subpackage tests
 #
 # *****************************************************************************
 #
-#	Copyright �� 2017. EarthWalk Software
+#	Copyright © 2017. EarthWalk Software
 #	Licensed under the Academic Free License, version 3.0.
 #
 #	Refer to the file named License.txt provided with the source,
@@ -26,23 +26,26 @@
 # *****************************************************************************
 #
 #			Version 0.0.1 - 02-01-2017.
+#					0.0.2 - 02-23-2017.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="./testlib"
-
-. $testlibDir/installDirs.bash
-
-. $testlibDir/stdLibs.bash
-#. $libDir/lmsSortArray.bash
-
-. $testlibDir/cliOptions.bash
-. $testlibDir/commonVars.bash
+declare    lmsapp_name="testLmsDynSort"
+declare    lmslib_release="0.1.1"
 
 # *****************************************************************************
 
-lmsscr_Version="0.0.1"			# script version
+. testlib/installDirs.bash
+
+. $dirAppLib/stdLibs.bash
+
+. $dirAppLib/cliOptions.bash
+. $dirAppLib/commonVars.bash
+
+# *****************************************************************************
+
+lmsscr_Version="0.0.2"			# script version
 
 # *****************************************************************************
 # *****************************************************************************
@@ -52,10 +55,10 @@ lmsscr_Version="0.0.1"			# script version
 # *****************************************************************************
 # *****************************************************************************
 
-. $testlibDir/testDump.bash
+. $dirAppLib/testDump.bash
 
-. $testlibDir/dynaNodeTests.bash
-. $testlibDir/dynaArrayTests.bash
+. $dirAppLib/dynaNodeTests.bash
+. $dirAppLib/dynaArrayTests.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -281,8 +284,8 @@ function testLmsDynsBubble()
 
 lmsScriptFileName $0
 
-. $testlibDir/openLog.bash
-. $testlibDir/startInit.bash
+. $dirAppLib/openLog.bash
+. $dirAppLib/startInit.bash
 
 lmsHelpInit ${lmsvar_help}
 
@@ -629,6 +632,6 @@ lmscli_optDebug=0
 
 # *****************************************************************************
 
-. $testlibDir/testEnd.bash
+. $dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

@@ -1,7 +1,7 @@
 # *****************************************************************************
 # *****************************************************************************
 #
-#   lmsInstallScript.bash
+#   lmsInstallToRepo.bash
 #
 # *****************************************************************************
 #
@@ -172,9 +172,9 @@ lmsDmpVar()
 # *******************************************************
 getRepositoryBranch()
 {
-	if [[ " ${!lmscli_shellParameters[@]} " =~ "branch" ]]
+	if [[ " ${!lmscli_shellParam[@]} " =~ "branch" ]]
 	then
-		svnBranch=${lmscli_shellParameters[branch]}
+		svnBranch=${lmscli_shellParam[branch]}
 	fi
 
 	if [ -z "${svnBranch}" ]
@@ -201,9 +201,9 @@ getRepositoryBranch()
 # *******************************************************
 getSourcePath()
 {
-	if [[ " ${!lmscli_shellParameters[@]} " =~ "source" ]]
+	if [[ " ${!lmscli_shellParam[@]} " =~ "source" ]]
 	then
-		repoSource=${lmscli_shellParameters[source]}
+		repoSource=${lmscli_shellParam[source]}
 	fi
 
 	return 0
@@ -225,9 +225,9 @@ getSourcePath()
 # *******************************************************
 getRepositoryPath()
 {
-	if [[ " ${!lmscli_shellParameters[@]} " =~ "svn" ]]
+	if [[ " ${!lmscli_shellParam[@]} " =~ "svn" ]]
 	then
-		svnPath=${lmscli_shellParameters[svn]}
+		svnPath=${lmscli_shellParam[svn]}
 	else
 		if [ -z "${svnPath}" ]
 		then
@@ -262,9 +262,9 @@ getRepositoryPath()
 # *******************************************************
 getRepository()
 {
-	if [[ " ${!lmscli_shellParameters[@]} " =~ "name" ]]
+	if [[ " ${!lmscli_shellParam[@]} " =~ "name" ]]
 	then
-		repository=${lmscli_shellParameters[name]}
+		repository=${lmscli_shellParam[name]}
 	else 
 		if [ -z "${repository}" ]
 		then
@@ -305,9 +305,9 @@ getRepository()
 # *******************************************************
 getHost()
 {
-	if [[ " ${!lmscli_shellParameters[@]} " =~ "host" ]]
+	if [[ " ${!lmscli_shellParam[@]} " =~ "host" ]]
 	then
-		svnHost=${lmscli_shellParameters[host]}
+		svnHost=${lmscli_shellParam[host]}
 	else
 		if [ -z "${svnHost}" ]
 		then
@@ -402,12 +402,12 @@ checkResult()
 
 lmscli_Validate=1
 
-lmscli_ParameterBuffer=( "$@" )
+lmscli_ParamBuffer=( "$@" )
 lmsStartupInit "1.0.0" $lmsvar_errors $lmsvar_help $lmsVariables
 
 case $? in
 
-	0)	if [[ " ${!lmscli_shellParameters[@]} " =~ "help" ]] || [ "$lmscli_command" = "help" ]
+	0)	if [[ " ${!lmscli_shellParam[@]} " =~ "help" ]] || [ "$lmscli_command" = "help" ]
 		then
 			displayHelp
 			$LINENO "EndOfTest"			
