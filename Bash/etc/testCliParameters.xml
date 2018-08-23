@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- copyright © 2014, 2016. EarthWalk Software. -->
+<lms>
+
+	<declarations name="lmscli_">
+
+		<declare name="shellParameters" type="associative" />
+
+			<declare parent="shellParameters" type="element"  name="batch"     >0</declare>
+			<declare parent="shellParameters" type="element"  name="bin"       >bin</declare>
+			<declare parent="shellParameters" type="element"  name="debug"     >0</declare>
+			<declare parent="shellParameters" type="element"  name="etc"       >etc</declare>
+			<declare parent="shellParameters" type="element"  name="fetch"     >0</declare>
+			<declare parent="shellParameters" type="element"  name="help"      >0</declare>
+			<declare parent="shellParameters" type="element"  name="host"      >localhost</declare>
+			<declare parent="shellParameters" type="element"  name="lang"      >bash</declare>
+			<declare parent="shellParameters" type="element"  name="lib"       >0.0.1</declare>
+			<declare parent="shellParameters" type="element"  name="man"       >share</declare>
+			<declare parent="shellParameters" type="element"  name="path"      >svn</declare>
+			<declare parent="shellParameters" type="element"  name="quiet"     >0</declare>
+			<declare parent="shellParameters" type="element"  name="repoName"  >test</declare>
+			<declare parent="shellParameters" type="element"  name="rootdir"   >local</declare>
+			<declare parent="shellParameters" type="element"  name="script"    >lmsInstallScript</declare>
+			<declare parent="shellParameters" type="element"  name="src"       >src</declare>
+			<declare parent="shellParameters" type="element"  name="type"      >local</declare>
+
+		<declare name="mapParameters" type="associative" />
+
+			<declare parent="mapParameters" type="element"  name="batch"    >batch</declare>
+			<declare parent="mapParameters" type="element"  name="bin"      >binDir</declare>
+			<declare parent="mapParameters" type="element"  name="debug"    >debug</declare>
+			<declare parent="mapParameters" type="element"  name="etc"      >etc</declare>
+			<declare parent="mapParameters" type="element"  name="fetch"    >fetch</declare>
+			<declare parent="mapParameters" type="element"  name="help"     >help</declare>
+			<declare parent="mapParameters" type="element"  name="host"     >host</declare>
+			<declare parent="mapParameters" type="element"  name="lang"     >lang</declare>
+			<declare parent="mapParameters" type="element"  name="lib"      >lib</declare>
+			<declare parent="mapParameters" type="element"  name="man"      >man</declare>
+			<declare parent="mapParameters" type="element"  name="path"     >path</declare>
+			<declare parent="mapParameters" type="element"  name="quiet"    >silent</declare>
+			<declare parent="mapParameters" type="element"  name="repoName" >repo</declare>
+			<declare parent="mapParameters" type="element"  name="rootDir"  >root</declare>
+			<declare parent="mapParameters" type="element"  name="script"   >script</declare>
+			<declare parent="mapParameters" type="element"  name="src"      >src</declare>
+			<declare parent="mapParameters" type="element"  name="type"     >type</declare>
+
+	</declarations>
+
+</lms>

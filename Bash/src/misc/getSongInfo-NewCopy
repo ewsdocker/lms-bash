@@ -1,0 +1,493 @@
+#!/bin/bash
+
+# *******************************************************
+# *******************************************************
+#
+#   getSongInfo
+#
+#     get the current audacious song information
+#
+#
+#   By Jay Wheeler, EarthWalk Software. 12-09-2014.
+#
+# *******************************************************
+# *******************************************************
+
+# *******************************************************
+# *******************************************************
+#
+#    Copyright (C) 2014, 2015. EarthWalk Software
+#
+# *******************************************************
+# *******************************************************
+
+# *******************************************************
+#
+#   File locations - modify as needed
+#
+# *******************************************************
+FILEROOT="/home/jay/.butt/Radio/"
+FILECURRENT="CurrentSong"
+FILESONGNAME="SongName"
+FILESONGHOST="SongHost"
+
+# *******************************************************
+#
+#   Setable options - change default, 
+#			or as command line options
+#
+# *******************************************************
+TESTING=0	# Debug output if not 0
+SILENT=0        # Set to 1 for absolutely NO output
+
+SLEEPRUN=30	# Seconds to sleep between testing if audacious is running
+SLEEPPLAY=10	# Seconds to sleep between testing if audacious is playing a song
+SLEEPSONG=5	# Seconds to sleep between testing if audacious song has ended or changed
+
+ALTERQUOTE=""   # Set to alternate character to use for ' character (for sensitive sound players)
+REDUCEQUOTE=1   # 0 = do not translate quote char, 1 = translate with ALTERQUOTE
+
+# *******************************************************
+#
+#   Global variables - modified by program flow
+#
+# *******************************************************
+CURRENTSONG=""  # Currently playing song
+CURRENTFILE=""  # Currently playing song file
+PLAYSTATUS=""   # Player status
+PLAYERPID=0	# Player PID
+
+STREAMTYPE=0    # Type of stream - 0=local file, 1=remote stream
+SONGARTIST=""   # Playing song artist
+SONGTITLE=""    #              title
+
+# *******************************************************
+#
+#    display
+#      print message, if allowed
+#
+# *******************************************************
+displayMessage()
+{
+    if [ "${SILENT}" == "0" ] 
+    then
+        echo "$1"
+    fi
+}
+
+# *******************************************************
+#
+#    debugOutput
+#      print debug message, if allowed
+#
+# *******************************************************
+debugOutput()
+{
+    if [ "${TESTING}" != "0" ] 
+    then
+        displayMessage "$1"
+    fi
+}
+
+# *******************************************************
+#
+#   checkInput
+#     check for input from keyboard
+#
+#     if none, exit
+#     if input = 'quit', exit with 1
+#
+# *******************************************************
+checkInput()
+{
+    read -t 1
+    if [ "$REPLY" == "quit" ]
+    then
+        debugOutput '(checkInput) Quitting'
+        exit 1
+    fi
+}
+
+# *******************************************************
+# *******************************************************
+
+# *******************************************************
+#
+#    getSongTuple
+#
+# *******************************************************
+getSongTuple()
+{
+    local field="$1"
+    TUPLE="`audtool current-song-tuple-data ${field}`"
+}
+
+# *******************************************************
+#
+#    streamOrLocal
+#
+# *******************************************************
+streamOrLocal()
+{
+    STREAMTYPE=1	# default to stream
+    getSongTuple 'file-path'
+    debugOutput "(streamOrLocal) file-path: ${TUPLE}"
+
+    if [[ ${TUPLE} == *"file://"* ]]
+    then
+      STREAMTYPE=0	# set to file (local)
+    fi
+
+    return ${STREAMTYPE}
+}
+
+# *******************************************************
+#
+#    artist
+#
+# *******************************************************
+artist()
+{
+    SONGARTIST=""
+    getSongTuple 'artist'
+    SONGARTIST=${TUPLE}
+}
+
+# *******************************************************
+#
+#    title
+#
+# *******************************************************
+title()
+{
+    SONGTITLE=""
+    getSongTuple 'title'
+    SONGTITLE=${TUPLE}
+
+    if [ ${REDUCEQUOTE} -ne 0 ]
+    then
+      SONGTITLE="${SONGTITLE/\'/$ALTERQUOTE}"
+    fi
+
+}
+
+# *******************************************************
+# *******************************************************
+
+# *******************************************************
+#
+#   isRunning
+#     return 0 if audacious is running, 1 if not
+#
+# *******************************************************
+isRunning()
+{
+    PLAYERPID="`pidof audacious`"
+    return $?
+}
+
+# *******************************************************
+#
+#   waitRunning
+#     wait until audacious is running
+#
+# *******************************************************
+waitRunning()
+{
+    isRunning
+    until [ $? == 0 ]
+    do
+      sleep $SLEEPRUN
+      checkInput
+      isRunning
+    done
+}
+
+# *******************************************************
+#
+#   isPlaying
+#     Return 1 if a song is playing, 0 if not
+#
+# *******************************************************
+isPlaying()
+{
+    PLAYSTATUS="stopped"
+    isRunning
+    if [ $? -eq 0 ]
+    then
+      PLAYSTATUS="`audtool playback-status`"
+      if [ "$PLAYSTATUS" == "playing" ]
+      then
+        return 1
+      fi
+    fi
+    return 0
+}
+
+# *******************************************************
+#
+#   waitPlaying
+#     Wait until a song is playing
+#
+# *******************************************************
+waitPlaying()
+{
+    isPlaying
+    until [ $? -ne 0 ]
+    do
+      isRunning
+      if [ $? -eq 1 ]
+      then
+        waitRunning
+      else
+        sleep $SLEEPPLAY
+      fi
+
+      checkInput
+      isPlaying
+      debugOutput "(waitPlaying) Play status: $PLAYSTATUS"
+    done
+    debugOutput "(waitPlaying) Play status: $PLAYSTATUS"
+}
+
+# *******************************************************
+#
+#    songChanged - wait until the current song has changed
+#
+# *******************************************************
+songChanged()
+{
+    checkInput
+    waitingSong=${SONGTITLE}
+    debugOutput "(songChanged) Waiting for song to end: ${waitingSong}"
+    until [ "${waitingSong}" != "${SONGTITLE}" ]
+    do
+      sleep $SLEEPSONG
+      checkInput
+      title
+    done
+}
+
+
+# *******************************************************
+#
+#    splitHostName
+#      attempts to split out the actual host name from
+#        the current SONGHOST to a shortened SONGHOST and
+#        remainder into descriptive SONGNAME
+#
+# *******************************************************
+splitHostName()
+{
+    debugOutput "(splitHostName) SongHost: ${SONGHOST}"
+
+    sep=':'
+    case $SONGHOST in
+
+      (*"$sep"*)
+	  SONGNAME=${SONGHOST#*"$sep"}   # first extract the end of the host name as a songname
+	  debugOutput "(splitHostName) SongNAME: ${SONGNAME}"
+
+          SONGHOST=${SONGHOST%%"$sep"*}  # extract the beginning of the host name AS the host name
+	  debugOutput "(splitHostName) SongHOST: ${SONGHOST}"
+          ;;
+
+      (*)
+	  debugOutput "(splitHostName) no seperator found!"
+	  debugOutput "(splitHostName) SongHOST: ${SONGHOST}"
+
+          SONGNAME=""
+	  debugOutput "(splitHostName) SongNAME: ${SONGNAME}"
+          ;;
+    esac
+}
+
+# *******************************************************
+#
+#    displayHelp
+#
+# *******************************************************
+displayHelp()
+{
+    displayMessage " "
+    displayMessage "getSongInfo [ [-h] [-b ss] [-d [nn]] [-r nn] [-p nn] [-q [nn]] [-s nn] ]"
+    displayMessage " "
+    displayMessage "  options:"
+    displayMessage "      -b = base directory for storing files (must have a trailing /)"
+    displayMessage "      -d = debug flag setting"
+    displayMessage "      -h = help (display this message)"
+    displayMessage "      -r = seconds to wait between program running queries"
+    displayMessage "      -p = seconds to wait between song playing queries"
+    displayMessage "      -q = quiet (no output) if set to non-zero"
+    displayMessage "      -s = seconds to wait between song name changed queries"
+    displayMessage " "
+    displayMessage "      nn = numeric value"
+    displayMessage "      ss = string value"
+    displayMessage " "
+}
+
+# *******************************************************
+#
+#    Start Main Script
+#
+# *******************************************************
+
+while test $# -gt 0
+do
+    case $1 in
+
+	-a)
+	    ALTERQUOTE=$2
+	    if [ "${ALTERQUOTE}" != "-" ]
+	    then
+	      if [ "${ALTERQUOTE:0:1}" == "-" ]
+	      then
+	        ALTERQUOTE=""
+	      else
+	        shift
+	      fi
+	    else
+	      shift
+	    fi
+	    REDUCEQUOTE=1
+	    ;;
+
+	-b)
+	    FILEROOT=$2
+	    shift
+	    ;;
+
+        -d)
+            TESTING=$2
+	    if [ -e $TESTING ]
+	    then
+	      TESTING=1
+ 	    fi
+
+            if [ ! -z "${TESTING##*[!0-9]*}" ]
+            then
+	      debugOutput "debug: $TESTING"
+	      shift
+	    else
+	      debugOutput "debug: $TESTING -- Arguement is a NOT number..."
+	      TESTING=1
+	    fi
+            ;;
+
+        -p)
+            SLEEPPLAY=$2
+	    debugOutput "sleepPlay: $SLEEPPLAY seconds."
+            shift
+            ;;
+
+	-q)
+      	    SILENT=1
+	    ;;
+
+        -r)
+            SLEEPRUN=$2
+	    debugOutput "sleepRun: $SLEEPRUN seconds."
+            shift
+            ;;
+
+	-s)
+            SLEEPSONG=$2
+	    debugOutput "sleepSong: $SLEEPSONG seconds."
+            shift
+            ;;
+
+	-t)
+	    REDUCEQUOTE=${REDUCEQUOTE}+1
+
+	    if [ ${REDUCEQUOTE} -gt 1 ]
+	    then
+	      REDUCEQUOTE=0
+	    fi
+	    ;;
+
+	-h)
+	    displayHelp
+	    exit 1
+            ;;
+
+	--help)
+	    displayHelp
+	    exit 1
+            ;;
+
+        *)
+            echo >&2 "Invalid argument: $1"
+            ;;
+    esac
+    shift
+done
+
+# *******************************************************
+
+while true
+do
+
+    waitPlaying
+
+    artist
+    title
+
+    streamOrLocal
+
+    # *******************************************************
+
+    CURRENTHOST=${SONGHOST}
+
+    if [ ${STREAMTYPE} -eq 0 ]
+    then						# local files
+      SONGHOST="LOCAL"
+      SONGNAME="${SONGARTIST} - ${SONGTITLE}"
+    else						# remote stream
+      SONGHOST=${SONGARTIST}
+      SONGNAME=${SONGTITLE}
+    fi
+
+    #
+    #  remove invalid characters from SongName
+    #
+    SONGNAME=`echo "${SONGNAME}" | tr -d -c ".[:alnum:]._ ()-"`
+
+    if [ "${CURRENTHOST}" != "${SONGHOST}" ]
+    then
+      displayMessage "*********************************"
+      displayMessage "${SONGHOST}"
+    fi
+
+    #
+    #  if there is nothing in SONGNAME, try to create a SONGNAME from SONGHOST
+    #
+    if [ -e "$SONGNAME" ]
+    then
+      if [ "${CURRENTHOST}" != "${SONGHOST}" ]
+      then
+        splitHostName
+      fi
+
+      if [ -e "$SONGNAME" ]
+      then
+        SONGNAME="... Station Break ..."
+      fi
+    fi
+
+    displayMessage "   ${SONGNAME}"
+
+    # *******************************************************
+
+    echo "${SONGHOST}" > ${FILEROOT}${FILESONGHOST}
+    echo "${SONGNAME}" > ${FILEROOT}${FILECURRENT}
+
+    # *******************************************************
+
+    songChanged
+
+done
+
+# *******************************************************
+
+exit 0
+
