@@ -7,21 +7,32 @@
 # ***************************************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.3
-# @copyright © 2016, 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
-# @package Linux Management Scripts
+# @version 0.2.0
+# @copyright © 2016, 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
+# @package lms-bash
 # @subpackage tests
 #
 # ***************************************************************************************************
 #
-#	Copyright © 2016, 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2016, 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source,
-#	or from
+#   This file is part of ewsdocker/lms-bash.
 #
-#			http://opensource.org/licenses/academic.php
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
+#
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.
 #
 # ***************************************************************************************************
 #
@@ -31,25 +42,26 @@
 #					0.1.1 - 01-23-2017.
 #					0.1.2 - 02-11-2017.
 #					0.1.3 - 02-23-2017.
+#                   0.2.0 - 08-24-2018.
 #
 # ***************************************************************************************************
 # ***************************************************************************************************
 
 declare    lmsapp_name="testLmsCli"
-declare    lmslib_release="0.1.1"
+declare    lmslib_release="0.1.2"
 
 # *****************************************************************************
 
-. testlib/installDirs.bash
+source testlib/installDirs.bash
 
-. $dirAppLib/stdLibs.bash
+source $dirAppLib/stdLibs.bash
 
-. $dirAppLib/cliOptions.bash
-. $dirAppLib/commonVars.bash
+source $dirAppLib/cliOptions.bash
+source $dirAppLib/commonVars.bash
 
 # *****************************************************************************
 
-declare    lmsscr_Version="0.1.3"	# script version
+declare    lmsscr_Version="0.2.0"	# script version
 
 declare    lmstst_Declarations="$dirEtc/testVariables.xml"
 
@@ -82,8 +94,8 @@ declare    lmstst_Declarations="$dirEtc/testVariables.xml"
 
 lmsScriptFileName $0
 
-. $dirAppLib/openLog.bash
-. $dirAppLib/startInit.bash
+source $dirAppLib/openLog.bash
+source $dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -111,7 +123,6 @@ lmsDomCLoad ${lmstst_Declarations} "lmstst_stack" 0
  }
 
 # *****************************************************************************
-
 
 lmsCliParse
 [[ $? -eq 0 ]] || lmsConioDisplay "cliParameterParse failed"
