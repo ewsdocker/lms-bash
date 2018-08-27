@@ -156,7 +156,7 @@ function testLmsWMParse()
 		return 1
 	 }
 
-	lmsUtiltestLmsWMParse ${wsName} "${wmInfo}"
+	lmsUtilWMParse ${wsName} "${wmInfo}"
 	[[ $? -eq 0 ]] ||
 	 {
 		lmsLogDebugMessage $LINENO "Debug" "Unable to parse wminfo: '$wmInfo'."

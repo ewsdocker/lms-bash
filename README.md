@@ -5,6 +5,6 @@ ____
 
 **NOT READY FOR USE.**
 
-The documentation for these scripts may be found in the [lms-bash Wiki](https://github.com/JayWheeler/lms-bash/wiki).
+The (incomplete) documentation for these scripts may be found in the [lms-bash Wiki](https://github.com/JayWheeler/lms-bash/wiki).
 
 ____

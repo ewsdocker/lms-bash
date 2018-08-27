@@ -287,7 +287,7 @@ function testtestLmsWMParse()
 	local arrayName="${1}"
 	local wmInfo="${2}"
 
-	lmsUtiltestLmsWMParse "${arrayName}" "${wmInfo}"
+	lmsUtilWMParse "${arrayName}" "${wmInfo}"
 	[[ $? -eq 0 ]] ||
 	 {
 		lmsConioDebug $LINENO "Debug" "Unable to parse wminfo: '$wmInfo'."

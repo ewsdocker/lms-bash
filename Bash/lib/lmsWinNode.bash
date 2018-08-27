@@ -68,7 +68,7 @@ function lmsWinNodeCreate()
 	local nodeName="${1}"
 	local winInfo="${2}"
 
-	lmsUtiltestLmsWMParse "${nodeName}" "${winInfo}"
+	lmsUtilWMParse "${nodeName}" "${winInfo}"
 	[[ $? -eq 0 ]] ||
 	 {
 		lmsLogDebugMessage $LINENO "WinNodeDebug" "Unable to parse wminfo: '$wmInfo'."

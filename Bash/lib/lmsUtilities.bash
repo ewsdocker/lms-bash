@@ -103,46 +103,25 @@ function lmsUtilCmndExists()
 #		check if the given variable exists
 #
 #	parameters:
-#		name = name of variable to check for
+#		dclVar = name of variable to check for
+#		dclString = (optional) location to store the declare information string
 #
 #	returns:
 #		0 = found
-#		non-zero = not found
+#		1 = not found
+#       2 = unable to store dclString
 #
 # *****************************************************************************
 function lmsUtilVarExists()
 {
-	local name="${1}"
-	local type=${2:-""}
-
-	declare -p | grep "$name" > /dev/null 2>&1
-	return $?
-}
-
-# *****************************************************************************
-#
-#	lmsUtilIsDeclared
-#
-#		check if the given variable exists
-#
-#	parameters:
-#		dclVar = name of variable to check
-#		dclString = location to place the variable information string
-#
-#	returns:
-#		0 = is an array
-#		1 = not an array
-#
-# *****************************************************************************
-function lmsUtilIsDeclared()
-{
-	local dclVar="${1}"
-
-	local dclString=$( declare -p | grep "${dclVar}")
+	local dclString=$( declare -p | grep "${1}" )
 	[[ $? -eq 0 ]] || return 1
 
-	lmsDeclareStr "${2}" "${dclString}"
-	[[ $? -eq 0 ]] || return 2
+	[[ -z "${2}" ]] ||
+	 {
+		lmsDeclareStr "${2}" "${dclString}"
+		[[ $? -eq 0 ]] || return 2
+	 }
 
 	return 0
 }
@@ -174,7 +153,7 @@ function lmsUtilIsArray()
 
 	local aInfo=""
 
-	lmsUtilIsDeclared "${1}" "aInfo"
+	lmsUtilVarExists "${1}" "aInfo"
 	[[ $? -eq 0 ]] || return 2
 
 	local aType=${aInfo:9:1}
@@ -406,9 +385,9 @@ function lmsUtilATS()
 
 	[[ -z "${atsName}" || -z "${atsString}" ]] && return 1
 
-	local arrayType=$( lmsUtilIsArray $atsName )
-
-	local -i number
+	local arrayType
+	lmsUtilIsArray "$atsName" "arrayType"
+	[[ $? -eq 0 ]] || return 2
 
 	local contents
 	local key
@@ -467,20 +446,12 @@ function lmsUtilWMList()
 	IFS=$OFS
 
 	lmsDynaNew "${wmList}" "a"
-	[[ $? -eq 0 ]] ||
-	 {
-		lmsLogDisplay "Unable to get wmList!"
-		return 1
-	 }
+	[[ $? -eq 0 ]] || return 1
 
 	for wmInfo in "${wmArray[@]}"
 	do
 		lmsDynaAdd "${wmList}" "${wmInfo}"
-		[[ $? -eq 0 ]] ||
-		 {
-			lmsLogDisplay "Unable to add '${wmInfo}' to '${wmList}'"
-			return 2
-		 }
+		[[ $? -eq 0 ]] || return 2
 
 	done
 
@@ -489,12 +460,12 @@ function lmsUtilWMList()
 
 # *****************************************************************************
 #
-#	lmsUtiltestLmsWMParse
+#	lmsUtilWMParse
 #
 #		parses window information record into an associative dynamic array
 #
 #	parameters:
-#		testLmsWMParsed = the name of an  associative dynamic array to populate
+#		wmParsed = the name of an  associative dynamic array to populate
 #		wmInfo   = record to be parsed
 #
 #	returns:
@@ -502,19 +473,16 @@ function lmsUtilWMList()
 #		non-zero = error code
 #
 # *****************************************************************************
-function lmsUtiltestLmsWMParse()
+function lmsUtilWMParse()
 {
-	local testLmsWMParsed="${1}"
+	local wmParsed="${1}"
 	local wmInfo="${2}"
 
-	lmsDynaRegistered ${testLmsWMParsed}
+	lmsDynaRegistered "${wmParsed}"
 	[[ $? -eq 0 ]] &&
 	 {
-		lmsDynaNew "${testLmsWMParsed}" "A"
-		[[ $? -eq 0 ]] ||
-		 {
-			lmsLogDisplay "Unable to create testLmsWMParsed!"
-			return 1
+		lmsDynaNew "${wmParsed}" "A"
+		[[ $? -eq 0 ]] || return 1
 		 }
 	 }
 
@@ -526,12 +494,8 @@ function lmsUtiltestLmsWMParse()
 
 	while [[ ${fieldIndex} -lt ${fieldCount} ]]
 	do
-		lmsDynaSetAt ${testLmsWMParsed} ${lmsutl_wmFields[$fieldIndex]} "${lmsstr_Exploded[$fieldIndex]}"
-		[[ $? -eq 0 ]] ||
-		 {
-			lmsLogDisplay "Unable to add field named '${lmsutl_wmFields[$fieldIndex]}'!"
-			return 2
-		 }
+		lmsDynaSetAt ${wmParsed} ${lmsutl_wmFields[$fieldIndex]} "${lmsstr_Exploded[$fieldIndex]}"
+		[[ $? -eq 0 ]] || return 2
 
 		(( fieldIndex++ ))
 
@@ -542,7 +506,7 @@ function lmsUtiltestLmsWMParse()
 	done
 
 	let fieldIndex-=1
-	lmsDynaSetAt "${testLmsWMParsed}" "${lmsutl_wmFields[$fieldIndex]}" "${wmInfo:$titleStart}"
+	lmsDynaSetAt "${wmParsed}" "${lmsutl_wmFields[$fieldIndex]}" "${wmInfo:$titleStart}"
 
 	return 0
 }
