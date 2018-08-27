@@ -121,46 +121,81 @@ function lmsUtilVarExists()
 
 # *****************************************************************************
 #
-#	lmsUtilIsArray
+#	lmsUtilIsDeclared
 #
-#		check if the given variable is an array
+#		check if the given variable exists
 #
 #	parameters:
-#		name = name of variable to check
-#
-#	outputs:
-#		"A" = associative array
-#		"a" = indexed array
-#		"s" = scalar (string or integer)
-#		""  = unknown variable name
+#		dclVar = name of variable to check
+#		dclString = location to place the variable information string
 #
 #	returns:
 #		0 = is an array
 #		1 = not an array
 #
 # *****************************************************************************
+function lmsUtilIsDeclared()
+{
+	local dclVar="${1}"
+
+	local dclString=$( declare -p | grep "${dclVar}")
+	[[ $? -eq 0 ]] || return 1
+
+	lmsDeclareStr "${2}" "${dclString}"
+	[[ $? -eq 0 ]] || return 2
+
+	return 0
+}
+
+# *****************************************************************************
+#
+#	lmsUtilIsArray
+#
+#		check if the given variable is an array
+#
+#	parameters:
+#		name = name of variable to check
+#		type = location to place the type
+#				"A" = associative array
+#				"a" = indexed array
+#				"s" = scalar (string or integer)
+#				"-" = unknown variable name
+#
+#	returns:
+#		0 = is an array
+#		1 = scalar (not an array)
+#		2 = not declared
+#		3 = lmsDeclareStr failed
+#
+# *****************************************************************************
 function lmsUtilIsArray()
 {
-	local name="${1}"
-	
-	declare -A | grep "$name" > /dev/null 2>&1
-	[[ $? -eq 0 ]] &&
-	 {
-		echo "A" 	# associative array
-		return 0
-	 }
+	[[ -z "${1}" || -z "%{2}" ]] return 2
 
-	declare -a | grep "$name" > /dev/null 2>&1
-	[[ $? -eq 0 ]] &&
-	 {
-		echo "a"	# array
-		return 0
-	 }
+	local aInfo=""
 
-	lmsUtilVarExists ${name}
-	[[ $? -eq 0 ]] && echo "s" || echo ""
+	lmsUtilIsDeclared "${1}" "aInfo"
+	[[ $? -eq 0 ]] || return 2
 
-	return 1
+	local aType=${aInfo:9:1}
+	lmsDeclareStr "${2}" "${aType}"
+	[[ $? -eq 0 ]] || return 3
+
+	case "${aType}" in
+		A | a)
+			return 0
+			;;
+
+		s)
+		    return 1
+		    ;;
+
+		*)
+		    break;
+		    ;;
+	esac
+
+	return 2
 }
 
 # *******************************************************
@@ -172,25 +207,16 @@ function lmsUtilIsArray()
 #	parameters:
 #		none
 #
-#	outputs:
-#		"0" = user (non-root)
-#		"1" = root (or sudoer)
-#
 #	returns:
-#		0 = no errors
+#		0 = user
+#		1 = root / sudoer
 #
 # *******************************************************
 function lmsUtilIsUserType()
 {
 	local iAm=$( whoami )
 
-    if [[ "${RUNUSER}" == "root" || "${iAm}" == "root" ]]
-    then
-    	echo "1"
-    fi
-
-	echo "0"
-
+    [[ "${USER}" == "root" || "${iAm}" == "root" ]] && return 1
 	return 0
 }
 
@@ -198,32 +224,21 @@ function lmsUtilIsUserType()
 #
 #	lmsUtilIsRoot
 #
-#		outputs messages and exits script if not root
+#		return 0 if root, 1 if user
 #
 #	parameters:
 #		none
 #
 #	returns:
-#		0 = no errors
-#
-#	exits if not root
+#		0 = root
+#       non-zero = not root
 #
 # *******************************************************
 function lmsUtilIsRoot()
 {
 	local iAm=$( whoami )
 
-	if [ "${iAm}" != "root" ]
-	then
-		lmsConioDisplay ""
-		lmsConioDisplay "	User = ${iAm}"
-		lmsConioDisplay ""
-		lmsConioDisplay "		${baseName} can only be run by root."
-		lmsConioDisplay ""
-
-		lmsErrorExitScript NotRoot
-	fi
-
+	[[ "${iAm}" != "root" ]] && return 1
 	return 0
 }
 
@@ -231,33 +246,21 @@ function lmsUtilIsRoot()
 #
 #    lmsUtilIsUser
 #
-#		outputs messages and exits script if not user
+#		return 0 if user, 1 if not
 #
 #	parameters:
 #		none
 #
 #	returns:
-#		0 = no errors
-#
-#	exits if not user
+#		0 = user
+#		non-zero = not user (root)
 #
 # *******************************************************
 function lmsUtilIsUser()
 {
     local iAm=$( whoami )
 
-    if [[ "${RUNUSER}" == "root" || "${iAm}" == "root" ]]
-    then
-	    lmsConioDisplay ""
-        lmsConioDisplay "    User = ${iAm} (${RUNUSER})"
-	    lmsConioDisplay ""
-        lmsConioDisplay "        ${baseName} can only be run by a sudo user."
-	    lmsConioDisplay ""
-
-
-		lmsErrorExitScript NotUser
-    fi
-
+    [[ "${RUNUSER}" == "root" || "${iAm}" == "root" ]] && return 1
     return 0
 }
 
@@ -284,11 +287,7 @@ function lmsUtilOsInfo()
 	local itemValue
 
 	lmsDynaNew "${arrayName}" "A"
-	[[ $? -eq 0 ]] ||
-	{
-		lmsLogDisplay "Unable to create dynArray: $arrayName"
-		return 1
-	}
+	[[ $? -eq 0 ]] || return 1
 
 	lmsutl_osString="$( cat /etc/os-release )"
 	readarray -t osItems <<< "$lmsutl_osString"
@@ -296,26 +295,14 @@ function lmsUtilOsInfo()
 	for item in "${osItems[@]}"
 	do
 		lmsStrSplit "${item}" itemName itemValue
-		[[ $? -eq 0 ]] ||
-		 {
-    		lmsLogDisplay "lmsStrSplit failed: ${item}"
-    		return 4
-		 }
+		[[ $? -eq 0 ]] || return 2
 
 		lmsStrUnquote "${itemValue}" itemValue
 
-		if [ -z "${itemValue}" ]
-		then
-			lmsLogDisplay "itemValue is null"
-			return 5
-		fi
+		[[ -z "${itemValue}" ]] && return 3
 
 		lmsDynaSetAt ${arrayName} $itemName "${itemValue}"
-		[[ $? -eq 0 ]] ||
-		 {
-    		lmsLogDisplay "lmsDynaSetAt failed to add: ${itemName} to ${arrayName}"
-    		return 6
-		 }
+		[[ $? -eq 0 ]] || return 4
 
 		(( itemNumber++ ))
 	done
@@ -331,9 +318,7 @@ function lmsUtilOsInfo()
 #
 #	parameters:
 #		arrayName = dynamic array name to create
-#
-#	outputs:
-#		osName = short name of the operating system
+#		osName = location to place short name of the operating system
 #
 #	returns:
 #		0 = no errors
@@ -343,40 +328,31 @@ function lmsUtilOsInfo()
 function lmsUtilOsType()
 {
 	local aName="${1}"
+	local osName="${2}"
 
 	local name=$( uname )
 
 	[[ "${name}" == "^linux*" ]] &&
 	 {
 		lmsUtilOsInfo "${aName}"
-		[[ $? -eq 0 ]] ||
-		 {
-			echo "error"
-			return 1
-		 }
+		[[ $? -eq 0 ]] || return 1
 
 		lmsDynaGetAt "${aName}" "ID" name
-		[[ $? -eq 0 ]] ||
-		 {
-			echo "error"
-			return 1
-		 }
+		[[ $? -eq 0 ]] || return 2
 
 		[[ "${name}" == "linuxmint" ]] &&
 		 {
 			local like
 			lmsDynaGetAt "${aName}" "ID_LIKE" like
-			[[ $? -eq 0 ]] ||
-			 {
-				echo "error"
-				return 1
-			 }
+			[[ $? -eq 0 ]] || return 3
 
 			[[ -n "${like}" ]] && name="${like}"
 		 }
 	 }
 
-	echo "${name}"
+	lmsDeclareStr "$osName" "${name}"
+	[[ $? -eq 0 ]] || return 4
+
 	return 0
 }
 

@@ -273,12 +273,8 @@ function testOsType()
 {
 	local arrayName="${1}"
 
-	local osType=$( lmsUtilOsType "$arrayName" )
-	[[ $? -eq 0 ]] ||
-	 {
-		lmsConioDebug $LINENO "Debug" "Unable to fetch OS type."
-		return 1
-	 }
+	lmsUtilOsType "$arrayName" "osType"
+	[[ $? -eq 0 ]] || return 1
 
 	lmsConioDisplay "OS Type: ${osType}"
 	lmsConioDisplay ""

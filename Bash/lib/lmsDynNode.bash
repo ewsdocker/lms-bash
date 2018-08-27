@@ -88,7 +88,8 @@ function lmsDynnNew()
 	lmsUtilVarExists ${lmsdyna_node}
 	[[ $? -eq 0 ]] ||
 	 {
-		local type=$( lmsUtilIsArray ${lmsdyna_node} )
+		local type
+		lmsUtilIsArray ${lmsdyna_node} "type"
 		[[ $? -eq 0 ]] ||
 		 {
 			[[ "${type}" == "A" ]] || lmsDynn_Destruct
