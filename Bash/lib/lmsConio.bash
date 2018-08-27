@@ -6,32 +6,43 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.0
-# @copyright © 2016, 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
+# @version 0.1.1
+# @copyright © 2016, 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package Linux Management Scripts
 # @subpackage lmsConio
 #
 # *****************************************************************************
 #
-#	Copyright © 2016, 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2016, 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source,
-#	or from
+#   This file is part of ewsdocker/lms-bash.
 #
-#			http://opensource.org/licenses/academic.php
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
 #
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.#
 # *****************************************************************************
 #
 #			Version 0.0.1 - 02-23-2016.
 #					0.0.2 - 09-06-2016.
 #					0.1.0 - 01-29-2017.
+#					0.1.1 - 08-25-2018.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-declare -r lmslib_lmsConio="0.1.0"	# version of lmsscr_Name library
+declare -r lmslib_lmsConio="0.1.1"	# version of lmsscr_Name library
 
 # *********************************************************************************
 #
@@ -53,19 +64,20 @@ function lmsConioDisplay()
 	local message="${1}"
 	local noEnter="${2}"
 
-	[[ ${lmscli_optSilent} -ne 0 && ${lmscli_optOverride} -eq 0 ]] && return 0
+	while true ; do
+		[[ ${lmscli_optSilent} -ne 0 && ${lmscli_optOverride} -eq 0 ]] && break
 
-	if [[ $# -ne 2 ]] 
-    then
-   		echo "${message}"
-        return 0
-    else
-  		[[ "${noEnter}" == "e" ]] && echo -ne "${message}" || echo -n "${message}"
-        return 0
-	fi
-	
+		if [[ $# -ne 2 ]] 
+    	then
+   			echo "${message}"
+        	break
+    	else
+  			[[ "${noEnter}" == "e" ]] && echo -ne "${message}" || echo -n "${message}"
+        	break
+	    fi
+	done
+
 	[[ ${lmscli_optOverride} -ne 0  &&  ${lmscli_optNoReset} -eq 0 ]] && lmscli_optOverride=0
-
 	return 0
 }
 
@@ -146,7 +158,7 @@ function lmsConioDebugL()
 #
 #    lmsConioDebugExit
 #
-#      print debug message, if allowed
+#      print debug message, if allowed, then exit the application script
 #
 #	parameters:
 #		lineNo = line number

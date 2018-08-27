@@ -8,21 +8,32 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.2.3
-# @copyright © 2016, 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
+# @version 0.2.4
+# @copyright © 2016, 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package Linux Management Scripts
 # @subpackage dynaArray
 #
 # *****************************************************************************
 #
-#	Copyright © 2016, 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2016, 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source,
-#	or from
+#   This file is part of ewsdocker/lms-bash.
 #
-#			http://opensource.org/licenses/academic.php
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
+#
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.
 #
 # *****************************************************************************
 #
@@ -36,11 +47,12 @@
 #					0.2.1 - 01-31-2017.
 #					0.2.2 - 02-08-2017.
 #					0.2.3 - 02-10-2017.
+#					0.2.4 - 08-25-2018.
 #
 # ***********************************************************************************************************
 # ***********************************************************************************************************
 
-declare    lmslib_lmsDynArray="0.2.3"	# version of library
+declare    lmslib_lmsDynArray="0.2.4"	# version of library
 
 declare    lmsdyna_currentArray=""	# current dynamic array name
 declare    lmsdyna_arrayType="A"	# type of array
@@ -134,31 +146,47 @@ function lmsDynaNew()
 #
 #	Returns:
 #		0 = no error
-#		non-zero = error code ==> 1 invalid name
-#							  ==> 2 missing value parameter
+#		non-zero = error code ==> 1 missing value parameter
+#							  ==> 2 invalid name
 #							  ==> 3 lmsDynaSetAt failed
+#							  ==> 4 lmsDyna_Count failed
 #
 # *********************************************************************************************************
 function lmsDynaAdd()
 {
-	[[ -z "${2}" ]] && return 2
-
-#	local value="${2}"
+	local lname=${1:-""}
+	local lvalue=${2:-""}
+	local lkey=${3:-""}
 	
-	lmsDynaRegistered "${1}"
-	[[ $? -eq 0 ]] || return 1
+	local lresult=1
+	
+	while [ true ]
+	do		
+		[[ -z "${lvalue}" ]] && break
 
-	local key=${3}
-	[[ -z "${key}" ]] && 
-	{
-		lmsDyna_Count key
-		[[ $? -eq 0 ]] || return 3
-	}
+		(( lresult++ ))
 
-	lmsDyna_SetAt ${key} "${2}"
-	[[ $? -eq 0 ]] || return 4
+		lmsDynaRegistered "${lname}"
+		[[ $? -eq 0 ]] || break
 
-	return 0
+		(( lresult++ ))
+
+		[[ -z "${lkey}" ]] && 
+		{
+			lmsDyna_Count lkey
+			[[ $? -eq 0 ]] || break
+		}
+
+		(( lresult++ ))
+
+		lmsDyna_SetAt ${lkey} "${lvalue}"
+		[[ $? -eq 0 ]] || break
+		
+		lresult=0
+		break
+	done
+	
+	return $lresult
 }
 
 # ***********************************************************************************************************
@@ -327,15 +355,20 @@ function lmsDynaKeys()
 # ********************************************************************************************************
 function lmsDynaFind()
 {
-	[[ -z "${2}" || -z "${3}" ]] && return 1
+	while [ true ]
+	do		
+		[[ -z "${2}" || -z "${3}" ]] && break
 	
-	lmsDynaRegistered "${1}"
-	[[ $? -eq 0 ]] || return 1
+		lmsDynaRegistered "${1}"
+		[[ $? -eq 0 ]] || break
 
-	lmsDyna_Find "${2}" ${3}
-	[[ $? -eq 0 ]] || return 1
+		lmsDyna_Find "${2}" ${3}
+		[[ $? -eq 0 ]] || break
 	
-	return 0
+		return 0
+	done
+	
+	return 1
 }
 
 # ***********************************************************************************************************

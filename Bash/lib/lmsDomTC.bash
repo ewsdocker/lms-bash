@@ -6,21 +6,32 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.4
-# @copyright © 2016, 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
+# @version 0.0.5
+# @copyright © 2016, 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package Linux Management Scripts
 # @subpackage lmsDomTCConfig
 #
 # *****************************************************************************
 #
-#	Copyright © 2016, 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2016, 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source,
-#	or from
+#   This file is part of ewsdocker/lms-bash.
 #
-#			http://opensource.org/licenses/academic.php
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
+#
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.
 #
 # *****************************************************************************
 #
@@ -28,11 +39,12 @@
 #			        0.0.2 - 09-15-2016.
 #					0.0.3 - 02-10-2017.
 #					0.0.4 - 02-15-2017.
+#					0.0.5 - 08-25-2018.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-declare -r lmslib_lmsDomTC="0.0.4"		# version of this library
+declare -r lmslib_lmsDomTC="0.0.5"		# version of this library
 
 # *****************************************************************************
 # *****************************************************************************
@@ -341,8 +353,6 @@ lmsDomTCConfig()
 	 {
 		lmserr_result=$?
 	 }
-
-declare -p | grep lmstest_
 
 	return ${lmserr_result}
 }

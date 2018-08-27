@@ -6,21 +6,32 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.2
-# @copyright © 2016, 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
+# @version 0.2.0
+# @copyright © 2016, 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package Linux Management Scripts
 # @subpackage lmsCliParam
 #
 # *****************************************************************************
 #
-#	Copyright © 2016, 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2016, 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source,
-#	or from
+#   This file is part of ewsdocker/lms-bash.
 #
-#			http://opensource.org/licenses/academic.php
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
+#
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.
 #
 # *****************************************************************************
 #
@@ -31,11 +42,12 @@
 #					0.1.0 - 01-24-2017.
 #					0.1.1 - 02-12-2017.
 #					0.1.2 - 02-23-2017.
+#					0.2.0 - 08-25-2018.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-declare    lmslib_lmsCli="0.1.2"				# library version number
+declare    lmslib_lmsCli="0.2.0"				# library version number
 
 # *****************************************************************************
 
@@ -65,7 +77,7 @@ declare -i lmscli_Errors=0						# number of cli errors detected
 #
 #	lmsCliCmndValid
 #
-#	Returns 0 if the command is valid, 1 if not
+#	  Returns 0 if the command is valid, 1 if not
 #
 #	parameters:
 #		cmnd = command
@@ -76,10 +88,12 @@ declare -i lmscli_Errors=0						# number of cli errors detected
 # **************************************************************************
 function lmsCliCmndValid()
 {
+	local lcmnd=${1:-""}
+
 	lmscli_cmndValid=0
 
-	[[ ${#lmscli_cmndsValid[@]} -eq 0  ||  -z "${1}" ]] && return 1
- 	[[ "${lmscli_cmndsValid[@]}" =~ "${1}" ]] && 
+	[[ ${#lmscli_cmndsValid[@]} -eq 0  ||  -z "${lcmnd}" ]] && return 1
+ 	[[ "${lmscli_cmndsValid[@]}" =~ "${lcmnd}" ]] && 
  	 {
  		lmscli_cmndValid=1
  		return 0
@@ -104,28 +118,45 @@ function lmsCliCmndValid()
 # **************************************************************************
 function lmsCliCmndNew()
 {
-	[[ -z "${1}" ]] && return 1
+	local pCmnd=${1:-""}
 
-	lmscli_command="${1}"
+	local lresult=1
 
-	lmsCliCmndValid "${lmscli_command}"
-	[[ $? -eq 0 ]] || return 0
-	
-	lmsStackSize ${lmscli_cmnds} lmscli_cmndNum
-	[[ $? -eq 0 ]] || return 3
+    while true ; do
+		[[ -z "${pCmnd}" ]] && break
 
-	lmsClinName "${lmscli_command}" ${lmscli_cmndNum} lmsclin_node
+		(( lresult++ ))
+		lmscli_command="${pCmnd}"
 
-	lmsUtilVarExists ${lmsclin_node}
-	[[ $? -eq 0 ]] || return 4
+		lmsCliCmndValid "${lmscli_command}"
+		[[ $? -eq 0 ]] || break
 
-	lmsDynaNew ${lmsclin_node} "A"
-	[[ ? -eq 0 ]] || return 5
+		(( lresult++ ))
 
-	lmsStackWrite ${lmscli_cmnds} ${lmscli_command}
-	[[ $? -eq 0 ]] && return 0
+		lmsStackSize ${lmscli_cmnds} lmscli_cmndNum
+		[[ $? -eq 0 ]] || break
 
-	return 6
+		(( lresult++ ))
+		lmsClinName "${lmscli_command}" ${lmscli_cmndNum} lmsclin_node
+
+		lmsUtilVarExists ${lmsclin_node}
+		[[ $? -eq 0 ]] || break
+
+		(( lresult++ ))
+
+		lmsDynaNew ${lmsclin_node} "A"
+		[[ ? -eq 0 ]] || break
+
+		(( lresult++ ))
+
+		lmsStackWrite ${lmscli_cmnds} ${lmscli_command}
+		[[ $? -eq 0 ]] || break
+		
+		lresult=0
+		break
+	done
+
+	return $lresult
 }
 
 # **************************************************************************
@@ -145,9 +176,11 @@ function lmsCliCmndNew()
 # **************************************************************************
 function lmsCliValid()
 {
-	[[ -z "${1}" ]] && return 1
+	local pName=${1:-""}
 
-	[[ ${#lmscli_shellParam[@]} -gt 0  &&  "${!lmscli_shellParam[@]}" =~ "${1}" ]] && return 0
+	[[ -z "${pName}" ]] && return 1
+
+	[[ ${#lmscli_shellParam[@]} -gt 0  &&  "${!lmscli_shellParam[@]}" =~ "${pName}" ]] && return 0
 	return 2
 }
 
@@ -168,17 +201,31 @@ function lmsCliValid()
 # **************************************************************************
 function lmsCliLookup()
 {
-	[[ -z "${1}"  ||  -z "${2}" ]] && return 1
+	local cpName=${1:-""}
+	local optName=${2:-""}
+
+	local lresult=1
+
+	while true ; do
+		[[ -z "${cpName}"  ||  -z "${optName}" ]] && break
 	
-	local parameter="${1}"
+		local parameter="${cpName}"
 
-	lmsCliValid "${parameter}"
-	[[ $? -eq 0 ]] || return 2
+		(( lresult++ ))
 
-	lmsDeclareStr ${2} "${lmscli_shellParam[$parameter]}"
-	[[ $? -eq 0 ]] || return 3
+		lmsCliValid "${cpName}"
+		[[ $? -eq 0 ]] || break
 
-	return 0
+		(( lresult++ ))
+
+		lmsDeclareStr ${optName} "${lmscli_shellParam[$cpName]}"
+		[[ $? -eq 0 ]] || break
+		
+		lresult=0
+		break
+	done
+
+	return $lresult
 }
 
 # **************************************************************************
@@ -198,10 +245,10 @@ function lmsCliLookup()
 # **************************************************************************
 function lmsCliAdd()
 {
-	[[ -z "${1}" ]] && return 1
-
 	local pName="${1}"
 	local pValue="${2}"
+
+	[[ -z "${pName}" ]] && return 1
 
 	lmsDeclareArrayEl "lmscli_InputParam" "${pName}" "${pValue}"
 	[[ $? -eq 0 ]] || return 2
@@ -226,10 +273,10 @@ function lmsCliAdd()
 # **************************************************************************
 function lmsCliCheck()
 {
-	[[ -z "${1}" ]] && return 1
-
 	local pName="${1}"
 	local pValue="${2}"
+
+	[[ -z "${pName}" ]] && return 1
 
 	lmsCliValid "${pName}"
 	[[ $? -eq 0 ]] &&
@@ -256,32 +303,35 @@ function lmsCliCheck()
 #		parameter = parameter string
 #
 #	returns:
-#		result = 0 if parameter is valid
-#			   = 1 if parameter is a command
-#			   = 2 if valid parameter format, but parameter is not valid
-#						(the name and value are stored in lmscli_InputParam first)
-#			   > 2 ==> error code
+#		0 = parameter is valid
+#		non-zero = error code
 #
 # **************************************************************************
 function lmsCliSplit()
 {
-	[[ -z "${1}" ]] && return 1
+	local lParam=${1:-""}
 
-	local paramName
-	local paramValue
+	while true ; do
+		[[ -z "${lParam}" ]] && break
 
-	lmsStrSplit "${1}" paramName paramValue
-	[[ $? -eq 0 ]] || return 4
+		local paramName
+		local paramValue
 
-	if [ -z "${paramValue}" ]
-	then
-		lmsCliCmndNew "${paramName}"
-	else
-		lmsCliCheck "${paramName}" "$paramValue"
-		[[ $? -eq 0 ]] || return 3
-	fi
+		lmsStrSplit "${lParam}" paramName paramValue
+		[[ $? -eq 0 ]] || break
 
-	return 0
+		if [ -z "${paramValue}" ]
+		then
+			lmsCliCmndNew "${paramName}"
+		else
+			lmsCliCheck "${paramName}" "$paramValue"
+			[[ $? -eq 0 ]] || break
+		fi
+
+		return 0
+	done
+
+	return 1
 }
 
 # **************************************************************************
@@ -297,7 +347,7 @@ function lmsCliSplit()
 #
 #	returns:
 #		Result = 0 if no error,
-#				 1 if empty parameter buffer,
+#			   = non-zero => error code
 #
 # **************************************************************************
 function lmsCliParse()

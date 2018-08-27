@@ -6,19 +6,31 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.4
-# @copyright © 2016, 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
+# @version 0.0.5
+# @copyright © 2016, 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package lmsUtilities
 #
 # *****************************************************************************
 #
-#	Copyright © 2016, 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2016, 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source, or from
+#   This file is part of ewsdocker/lms-bash.
 #
-#			http://opensource.org/licenses/academic.php
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
+#
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.
 #
 # *****************************************************************************
 #
@@ -26,10 +38,11 @@
 #           0.0.2 - 08-26-2016.
 #			0.0.3 - 12-18-2016.
 #			0.0.4 - 02-08-2017.
+#			0.0.5 - 08-26-2018.
 #
 # *****************************************************************************
 # *****************************************************************************
-declare -r lmslib_lmsUtilities="0.0.4"	# version of library
+declare -r lmslib_lmsUtilities="0.0.5"	# version of library
 
 declare    lmsutl_osString
 declare -a lmsutl_wmFields=( window winws winx winy winw winh winmachine wintitle )
@@ -63,6 +76,28 @@ function lmsUtilCommandExists()
 
 # *****************************************************************************
 #
+#	lmsUtilCmndExists
+#
+#		check if the given external command has been installed
+#
+#	parameters:
+#		cmnd = command to check for
+#
+#	returns:
+#		0 = found
+#		1 = not found
+#
+# *****************************************************************************
+function lmsUtilCmndExists()
+{
+	local cmnd=${1}
+
+	type ${cmnd} >/dev/null 2>&1
+	return $?
+}
+
+# *****************************************************************************
+#
 #	lmsUtilVarExists
 #
 #		check if the given variable exists
@@ -72,7 +107,7 @@ function lmsUtilCommandExists()
 #
 #	returns:
 #		0 = found
-#		1 = not found
+#		non-zero = not found
 #
 # *****************************************************************************
 function lmsUtilVarExists()
@@ -81,9 +116,7 @@ function lmsUtilVarExists()
 	local type=${2:-""}
 
 	declare -p | grep "$name" > /dev/null 2>&1
-	[[ $? -eq 0 ]] && return 0
-	
-	return 1
+	return $?
 }
 
 # *****************************************************************************
@@ -392,11 +425,12 @@ function lmsUtilIndent()
 # ******************************************************************************
 function lmsUtilATS()
 {
-	[[ -z "${1}" || -z "${2}" ]] && return 1
+	local atsName="${1}"
+	local atsString="${2}"
 
-	local name="${1}"
+	[[ -z "${atsName}" || -z "${atsString}" ]] && return 1
 
-	local arrayType=$( lmsUtilIsArray $name )
+	local arrayType=$( lmsUtilIsArray $atsName )
 
 	local -i number
 
@@ -404,14 +438,14 @@ function lmsUtilATS()
 	local key
 	local keys
 
-	eval 'keys=$'"{!$name[@]}"
+	eval 'keys=$'"{!$atsName[@]}"
 
 	local msg=""
-	printf -v msg "   %s:\n" ${name}
+	printf -v msg "   %s:\n" ${atsName}
 
 	for key in ${keys}
 	do
-		eval 'contents=$'"{$name[$key]}"
+		eval 'contents=$'"{$atsName[$key]}"
 
 		[[ "${arrayType}" == "A" ]] &&
 		 {
@@ -422,7 +456,7 @@ function lmsUtilATS()
 		printf -v msg "%s      [ % 5u ] = %s\n" "${msg}" "${key}" "${contents}"
 	done
 
-	lmsDeclareStr ${2} "${msg}"
+	lmsDeclareStr ${atsString} "${msg}"
 	[[ $? -eq 0 ]] || return 3
 
 	return 0
