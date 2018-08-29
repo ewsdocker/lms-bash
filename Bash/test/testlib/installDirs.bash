@@ -35,16 +35,22 @@
 #
 # *****************************************************************************
 #
-#			Version 0.0.3 - 08-24-2018.
+#			Version 0.0.1 - 02-24-2016.
+#					0.0.2 - 01-24-2017.
+#			        0.0.3 - 08-24-2018.
 #
 # *****************************************************************************
 # *****************************************************************************
 
-lmscli_optDevelopment=1
+lmsbase_prefix="lms-base-${lmslib_release}"
+lmsbase_development=1
+lmsbase_container=1
 
-if [[ ${lmscli_optDevelopment} -eq 0 ]]
+if [[ ${lmsbase_development} -eq 0 || lmsbase_container -ne 0 ]]
 then
 	dirRoot="/usr/local"
+
+	[[ lmsbase_container -ne 0 ]] && dirRoot="${lmsbase_prefix}${dirRoot}"
 
 	dirBash="${dirRoot}/share/LMS/Bash"
 	dirRelease="${dirBash}/${lmslib_release}"
