@@ -43,36 +43,32 @@
 # *****************************************************************************
 
 declare    lmslib_bashRelease="0.1.2"
+
 declare    lmsbase_prefix="/lms-base-${lmslib_bashRelease}"
 declare    lmsbase_dirBase="/usr/local"
 
-declare    lmsbase_bash="LMS/Bash"
+#declare    lmsbase_prefix=""
+#declare    lmsbase_dirBase="${HOME}/.local"
+
+declare    lmsbase_bash="LMS/bash"
 declare    lmsbase_bashRelease="${lmsbase_bash}-${lmslib_bashRelease}"
-
-declare    lmsbase_dirEtc="etc"
-declare    lmsbase_dirLib="lib"
-declare    lmsbase_dirShare="share"
-declare    lmsbase_dirBin="bin"
-declare    lmsbase_dirTests="tests"
-
-declare    lmsbase_dirAppSrc=""
-declare    lmsbase_dirApplication=""
 
 # *****************************************************************************
 
 lmsbase_dirBase="${lmsbase_prefix}${lmsbase_dirBase}"
 
-lmsbase_dirBash="${lmsbase_dirBase}/share${lmsbase_bash}"
-lmsbase_dirRelease="${lmsbase_bashRelease}"
+declare    lmsbase_dirBin="${lmsbase_dirBase}/bin/${lmsbase_bashRelease}"
+declare    lmsbase_dirEtc="${lmsbase_dirBase}/etc/${lmsbase_bashRelease}"
+declare    lmsbase_dirLib="${lmsbase_dirBase}/lib/${lmsbase_bashRelease}"
+declare    lmsbase_dirShare="${lmsbase_dirBase}/share/${lmsbase_bashRelease}"
+declare    lmsbase_dirTests="${lmsbase_dirShare}/tests"
 
-lmsbase_dirEtc="${lmsbase_dirBase}/etc/${lmsbase_bashRelease}"
-lmsbase_dirLib="${lmsbase_dirBase}/lib/${lmsbase_bashRelease}"
+declare    lmsbase_dirAppSrc="${lmsbase_dirTests}"
+declare    lmsbase_dirAppLib="${lmsbase_dirAppSrc}/testlib"
 
-lmsbase_dirAppLog="/var/local/log/${lmsbase_bashRelease}/test"
-
-lmsbase_dirAppSrc="${lmsbase_dirRelease}/test"
-lmsbase_dirApplication="${lmsbase_dirAppSrc}/${lmsapp_name}"
-lmsbase_dirAppLib="${lmsbase_dirAppSrc}/testlib"
+declare    lmsbase_dirApplication="${lmsbase_dirAppSrc}/${lmsapp_name}"
+declare    lmsbase_dirAppLog="/var/local/log/${lmsbase_bashRelease}/test"
 
 # *****************************************************************************
 # *****************************************************************************
+
