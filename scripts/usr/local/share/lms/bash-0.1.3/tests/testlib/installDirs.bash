@@ -63,11 +63,15 @@ declare    lmsbase_dirLib="${lmsbase_dirBase}/lib/${lmsbase_bashRelease}"
 declare    lmsbase_dirShare="${lmsbase_dirBase}/share/${lmsbase_bashRelease}"
 declare    lmsbase_dirTests="${lmsbase_dirShare}/tests"
 
-declare    lmsbase_dirAppSrc="${lmsbase_dirTests}"
-declare    lmsbase_dirAppLib="${lmsbase_dirAppSrc}/testlib"
+declare    lmsbase_dirTestLib="${lmsbase_dirTests}/testlib"
 
-declare    lmsbase_dirApplication="${lmsbase_dirAppSrc}/${lmsapp_name}"
-declare    lmsbase_dirAppLog="/var/local/log/${lmsbase_bashRelease}/test"
+declare    lmsbase_dirApps="${lmsbase_dirBin}"
+declare    lmsbase_dirAppLib="${lmsbase_dirApps}/applib"
+
+declare    lmsbase_dirVar="${lmsbase_prefix}/var/local"
+
+declare    lmsbase_dirAppLog="${lmsbase_dirVar}/log/${lmsbase_bashRelease}"
+declare    lmsbase_dirBkup="${lmsbase_dirVar}/backup/${lmsbase_bashRelease}"
 
 # *****************************************************************************
 # *****************************************************************************
