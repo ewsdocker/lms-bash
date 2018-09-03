@@ -46,7 +46,7 @@
 lmsStartupInit $lmsscr_Version ${lmsvar_errors}
 [[ $? -eq 0 ]] ||
  {
-	lmsConioDebug $LINENO "Debug" "Unable to load error codes."
+	lmsConioDebugL "XmlError" "Unable to select ${lmserr_arrayName}"
 	exit 1
  }
 
