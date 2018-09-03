@@ -10,7 +10,7 @@
 # @copyright © 2016, 2017, 2018. EarthWalk Software.
 # @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package lms-bash
-# @subpackage Applications
+# @subpackage applications
 #
 # *****************************************************************************
 #
