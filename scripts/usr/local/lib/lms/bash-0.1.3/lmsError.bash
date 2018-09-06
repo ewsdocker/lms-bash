@@ -119,8 +119,8 @@ function lmsErrorClearQuery()
 #	Read the error codes from the supplied xml file.
 #
 #	parameters:
-#		XmlName = internal name of the error code file
-#		FileName = error code xml file name
+#		ArrayName = internal name of the error code file
+#		XmlVars = error code xml file name
 #		CodesName = error codes file name
 #
 #	returns:

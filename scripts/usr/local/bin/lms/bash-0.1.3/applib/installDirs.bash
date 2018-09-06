@@ -10,7 +10,7 @@
 # @copyright © 2016, 2017, 2018. EarthWalk Software.
 # @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package lms-bash
-# @subpackage tests
+# @subpackage applications
 #
 # *****************************************************************************
 #
@@ -42,18 +42,23 @@
 # *****************************************************************************
 # *****************************************************************************
 
-declare    lmslib_bashRelease="0.1.2"
+declare    lmslib_bashRelease="0.1.3"
 
-declare    lmsbase_prefix="/lms-base-${lmslib_bashRelease}"
+# *****************************************************************************
+
+declare    lmsbase_prefix="/media/dev-2018/git/ewsdocker/lms-bash/scripts"
 declare    lmsbase_dirBase="/usr/local"
+
+#declare    lmsbase_prefix="/lms-base-${lmslib_bashRelease}"
+#declare    lmsbase_dirBase="/usr/local"
 
 #declare    lmsbase_prefix=""
 #declare    lmsbase_dirBase="${HOME}/.local"
 
-declare    lmsbase_bash="LMS/bash"
-declare    lmsbase_bashRelease="${lmsbase_bash}-${lmslib_bashRelease}"
-
 # *****************************************************************************
+
+declare    lmsbase_bash="lms/bash"
+declare    lmsbase_bashRelease="${lmsbase_bash}-${lmslib_bashRelease}"
 
 lmsbase_dirBase="${lmsbase_prefix}${lmsbase_dirBase}"
 
@@ -61,12 +66,12 @@ declare    lmsbase_dirBin="${lmsbase_dirBase}/bin/${lmsbase_bashRelease}"
 declare    lmsbase_dirEtc="${lmsbase_dirBase}/etc/${lmsbase_bashRelease}"
 declare    lmsbase_dirLib="${lmsbase_dirBase}/lib/${lmsbase_bashRelease}"
 declare    lmsbase_dirShare="${lmsbase_dirBase}/share/${lmsbase_bashRelease}"
-declare    lmsbase_dirTests="${lmsbase_dirShare}/tests"
-
-declare    lmsbase_dirTestLib="${lmsbase_dirTests}/testlib"
 
 declare    lmsbase_dirApps="${lmsbase_dirBin}"
 declare    lmsbase_dirAppLib="${lmsbase_dirApps}/applib"
+
+declare    lmsbase_dirTests="${lmsbase_dirBin}/tests"
+declare    lmsbase_dirTestLib="${lmsbase_dirTests}/testlib"
 
 declare    lmsbase_dirVar="${lmsbase_prefix}/var/local"
 

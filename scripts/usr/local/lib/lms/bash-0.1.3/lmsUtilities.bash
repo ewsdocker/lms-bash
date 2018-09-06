@@ -149,7 +149,7 @@ function lmsUtilVarExists()
 # *****************************************************************************
 function lmsUtilIsArray()
 {
-	[[ -z "${1}" || -z "%{2}" ]] return 2
+	[[ -z "${1}" || -z "${2}" ]] && return 2
 
 	local aInfo=""
 
@@ -483,7 +483,6 @@ function lmsUtilWMParse()
 	 {
 		lmsDynaNew "${wmParsed}" "A"
 		[[ $? -eq 0 ]] || return 1
-		 }
 	 }
 
 	local fieldIndex=0

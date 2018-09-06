@@ -7,44 +7,59 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.2
-# @copyright © 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
+# @version 0.0.3
+# @copyright © 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package Linux Management Scripts
 # @subpackage tests
 #
 # *****************************************************************************
 #
-#	Copyright © 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source,
-#	or from
-#			http://opensource.org/licenses/academic.php
+#   This file is part of ewsdocker/lms-bash.
+#
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
+#
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.
 #
 # *****************************************************************************
 #
 #			Version 0.0.1 - 01-29-2017.
 #					0.0.2 - 02-23-2017.
+#					0.0.3 - 09-05-2018.
 #
 # *****************************************************************************
 # *****************************************************************************
 
 declare    lmsapp_name="testLmsConio"
-declare    lmslib_bashRelease="0.1.1"
+declare    lmslib_bashRelease="0.1.3"
 
 # *****************************************************************************
 
-. testlib/installDirs.bash
+source ../applib/installDirs.bash
 
-. $lmsbase_dirLib/stdLibs.bash
+source $lmsbase_dirAppLib/stdLibs.bash
 
-. $lmsbase_dirLib/cliOptions.bash
-. $lmsbase_dirLib/commonVars.bash
+source $lmsbase_dirAppLib/cliOptions.bash
+source $lmsbase_dirAppLib/commonVars.bash
 
 # *****************************************************************************
 
-lmsscr_Version="0.0.2"						# script version
+lmsscr_Version="0.0.3"						# script version
+
+declare    lmsapp_declare="${lmsbase_dirEtc}/testDeclarations.xml"  # script declarations
 
 # *****************************************************************************
 # *****************************************************************************
@@ -54,7 +69,7 @@ lmsscr_Version="0.0.2"						# script version
 # *****************************************************************************
 # *****************************************************************************
 
-. $lmsbase_dirLib/testDump.bash
+source $lmsbase_dirTestLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -261,8 +276,8 @@ function testLmsConioPromptReply()
 
 lmsScriptFileName $0
 
-. $lmsbase_dirLib/openLog.bash
-. $lmsbase_dirLib/startInit.bash
+source $lmsbase_dirAppLib/openLog.bash
+source $lmsbase_dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -272,6 +287,7 @@ lmsScriptFileName $0
 # *****************************************************************************
 # *****************************************************************************
 
+echo "setting optSilent = 1"
 lmscli_optSilent=1
 
 testLmsConioDisplay "Starting conio tests. - only happens when not silent"
@@ -279,6 +295,7 @@ echo ""
 
 # *****************************************************************************
 
+echo "setting optSilent = 0"
 lmscli_optSilent=0
 
 testLmsConioDisplay "Starting conio tests. - only happens when not silent"
@@ -313,6 +330,6 @@ echo ""
 
 # *****************************************************************************
 
-. $lmsbase_dirLib/scriptEnd.bash
+source $lmsbase_dirAppLib/scriptEnd.bash
 
 # *****************************************************************************

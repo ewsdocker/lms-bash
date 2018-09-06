@@ -10,42 +10,58 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 1.1.5
-# @copyright © 2014, 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
+# @version 1.1.6
+# @copyright © 2014, 2016, 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package getSongInfo
 #
 # *****************************************************************************
 #
-#	Copyright © 2014, 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2014, 2016, 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source,
-#	or from
+#   This file is part of ewsdocker/lms-bash.
 #
-#			http://opensource.org/licenses/academic.php
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
 #
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.#
 # *****************************************************************************
+#
+#			Version 0.0.1 - 01-29-2017.
+#					1.1.0 - 02-23-2017.
+#					1.1.6 - 09-05-2018.
+#
+## *****************************************************************************
 # *****************************************************************************
 
 declare    lmsapp_name="getSongInfo"
-declare    lmslib_bashRelease="0.1.1"
+declare    lmslib_bashRelease="0.1.3"
 
 declare -i lmscli_optProduction=0
 
 # *****************************************************************************
 
-. ../appLib/installDirs.bash
+source applib/installDirs.bash
 
 # *****************************************************************************
 
-. $lmsbase_dirLib/stdLibs.bash
-. $lmsbase_dirLib/cliOptions.bash
-. $lmsbase_dirLib/commonVars.bash
+source $lmsbase_dirLib/stdLibs.bash
+source $lmsbase_dirLib/cliOptions.bash
+source $lmsbase_dirLib/commonVars.bash
 
 # *****************************************************************************
 
-lmsscr_Version="1.1.5"									# script version
+lmsscr_Version="1.1.6"									# script version
 
 lmsvar_errors="$lmsbase_dirEtc/errorCodes.xml"
 lmsvar_help="$lmsbase_dirEtc/getSongHelp.xml"					# path to the help information file

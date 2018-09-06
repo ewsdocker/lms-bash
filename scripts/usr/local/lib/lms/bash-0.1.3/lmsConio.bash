@@ -31,7 +31,8 @@
 #
 #   You should have received a copy of the GNU General Public License
 #   along with ewsdocker/lms-bash.  If not, see 
-#   <http://www.gnu.org/licenses/>.#
+#   <http://www.gnu.org/licenses/>.
+#
 # *****************************************************************************
 #
 #			Version 0.0.1 - 02-23-2016.
@@ -48,7 +49,7 @@ declare -r lmslib_lmsConio="0.1.1"	# version of lmsscr_Name library
 #
 #    lmsConioDisplay
 #
-#      print message, if allowed
+#       print message, if allowed
 #
 #	parameters:
 #		message = a string to be printed
@@ -64,7 +65,8 @@ function lmsConioDisplay()
 	local message="${1}"
 	local noEnter="${2}"
 
-	while true ; do
+	while [[ true ]]
+	do
 		[[ ${lmscli_optSilent} -ne 0 && ${lmscli_optOverride} -eq 0 ]] && break
 
 		if [[ $# -ne 2 ]] 

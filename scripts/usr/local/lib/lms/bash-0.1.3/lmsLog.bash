@@ -67,6 +67,11 @@ function lmsLogOpen()
 	[[ -z "${logName}" ]] && return 1
 
 	lmslog_file="${logName}"
+	
+	lmslog_basename=$( basename ${lmslog_file} )
+	lmslog_dirname=$( dirname ${lmslog_file} )
+	mkdir -p ${lmslog_dirname}
+
 	lmslog_openType=${openType}
 	lmslog_separator=${separator}
 	lmslog_isOpen=0
