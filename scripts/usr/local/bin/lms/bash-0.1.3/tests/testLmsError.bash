@@ -401,6 +401,6 @@ lmsConioDisplay "lmsErrorCodeList NAME FORMATTED BUFFER"
 
 # *****************************************************************************
 
-source $lmsbase_dirLib/scriptEnd.bash
+source $lmsbase_dirAppLib/scriptEnd.bash
 
 # *****************************************************************************
