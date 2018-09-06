@@ -47,22 +47,24 @@
 # *****************************************************************************
 
 declare    lmsapp_name="testLmsError"
-declare    lmslib_bashRelease="0.1.2"
+declare    lmslib_bashRelease="0.1.3"
 
 # *****************************************************************************
 
-source testlib/installDirs.bash
+source ../applib/installDirs.bash
 
-source $lmsbase_dirLib/stdLibs.bash
+source $lmsbase_dirAppLib/stdLibs.bash
+source $lmsbase_dirAppLib/cliOptions.bash
+source $lmsbase_dirAppLib/commonVars.bash
+
 source $lmsbase_dirLib/lmsSortArray.bash
-
-source $lmsbase_dirLib/cliOptions.bash
-source $lmsbase_dirLib/commonVars.bash
 
 # *****************************************************************************
 
 lmsscr_Version="0.1.3"					# script version
-declare lmstst_errorNumber=0
+
+declare    lmstst_errorNumber=0
+declare    lmsapp_declare="$lmsbase_dirEtc/cliOptions.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -72,7 +74,7 @@ declare lmstst_errorNumber=0
 # *****************************************************************************
 # *****************************************************************************
 
-source $lmsbase_dirLib/testDump.bash
+source $lmsbase_dirTestLib/testDump.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -92,8 +94,8 @@ source $lmsbase_dirLib/testDump.bash
 
 lmsScriptFileName $0
 
-source $lmsbase_dirLib/openLog.bash
-source $lmsbase_dirLib/startInit.bash
+source $lmsbase_dirAppLib/openLog.bash
+source $lmsbase_dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************

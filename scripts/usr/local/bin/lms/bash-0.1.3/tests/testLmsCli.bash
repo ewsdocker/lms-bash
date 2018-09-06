@@ -48,22 +48,22 @@
 # ***************************************************************************************************
 
 declare    lmsapp_name="testLmsCli"
-declare    lmslib_bashRelease="0.1.2"
+declare    lmslib_bashRelease="0.1.3"
 
 # *****************************************************************************
 
-source testlib/installDirs.bash
+source ../applib/installDirs.bash
 
-source $lmsbase_dirLib/stdLibs.bash
+source $lmsbase_dirAppLib/stdLibs.bash
 
-source $lmsbase_dirLib/cliOptions.bash
-source $lmsbase_dirLib/commonVars.bash
+source $lmsbase_dirAppLib/cliOptions.bash
+source $lmsbase_dirAppLib/commonVars.bash
 
 # *****************************************************************************
 
 declare    lmsscr_Version="0.2.0"	# script version
 
-declare    lmstst_Declarations="$lmsbase_dirEtc/testVariables.xml"
+declare    lmsapp_declare="$lmsbase_dirEtc/cliOptions.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -73,8 +73,8 @@ declare    lmstst_Declarations="$lmsbase_dirEtc/testVariables.xml"
 # *****************************************************************************
 # *****************************************************************************
 
-. $lmsbase_dirLib/testDump.bash
-. $lmsbase_dirLib/testUtilities.bash
+. $lmsbase_dirTestLib/testDump.bash
+. $lmsbase_dirTestLib/testUtilities.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -94,8 +94,8 @@ declare    lmstst_Declarations="$lmsbase_dirEtc/testVariables.xml"
 
 lmsScriptFileName $0
 
-source $lmsbase_dirLib/openLog.bash
-source $lmsbase_dirLib/startInit.bash
+source $lmsbase_dirAppLib/openLog.bash
+source $lmsbase_dirAppLib/startInit.bash
 
 # *****************************************************************************
 # *****************************************************************************
@@ -110,36 +110,9 @@ lmscli_optQueueErrors=0
 lmscli_Errors=0
 
 lmscli_optLogDisplay=1
-
-lmsConioDisplay "Loading cli parameters from ${lmstst_Declarations}"
-
-# *****************************************************************************
-
-lmsDomCLoad ${lmstst_Declarations} "lmstst_stack" 0
-[[ $? -eq 0 ]] ||
- {
-	lmsConioDisplay "DomError - lmsDomCLoad failed."
-	testDumpExit "lmsdom_ lmstst_ lmsstk lmscli"
- }
+lmscli_optSilent=0
 
 # *****************************************************************************
-
-lmsCliParse
-[[ $? -eq 0 ]] || lmsConioDisplay "cliParameterParse failed"
-
-[[ ${lmscli_Errors} -eq 0 ]] ||
- {
-	lmsCli_optDebug=1
-	lmsConioDebugL "CliError" "cliErrors = ${lmscli_Errors}, param = ${lmscli_paramErrors}, cmnd = ${lmscli_cmndErrors}"
-	lmsCli_optDebug=0
- }
-
-[[ ${lmscli_Errors} -eq 0 ]] &&
- {
-	lmsCliApply
-	[[ $? -eq 0 ]] || lmsConioDisplay "lmsCliApply failed."
- }
-
 
 lmstst_buffer=""
 
@@ -157,6 +130,6 @@ lmsConioDisplay ""
 
 # *****************************************************************************
 
-. $lmsbase_dirLib/scriptEnd.bash
+source $lmsbase_dirAppLib/scriptEnd.bash
 
 # *****************************************************************************
