@@ -64,6 +64,7 @@ source $lmsbase_dirAppLib/commonVars.bash
 declare    lmsscr_Version="0.2.0"	# script version
 
 declare    lmsapp_declare="$lmsbase_dirEtc/cliOptions.xml"
+lmsapp_help="$lmsbase_dirEtc/helpTest.xml"	# path to the help file
 
 # *****************************************************************************
 # *****************************************************************************

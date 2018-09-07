@@ -266,7 +266,7 @@ function lmsDomCLoad()
 	[[ $? -eq 0 ]] || return 1
 
 	lmsdcg_ns=""
-	lmsStackWrite ${lmsdcg_stackName} ${lmsdcg_ns}
+	lmsStackWrite ${lmsdcg_stackName} "${lmsdcg_ns}"
 	[[ $? -eq 0 ]] || return 2
 
 	lmsDomDParse ${lmsdcg_path}

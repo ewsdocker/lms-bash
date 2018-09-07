@@ -414,6 +414,8 @@ function lmsDynaKeyExists()
 # **********************************************************************************************************
 function lmsDynaCount()
 {
+echo "lmsDynaCount ${1} ${2}"
+
 	lmsDynaRegistered "${1}"
 	[[ $? -eq 0 ]] || return 1
 

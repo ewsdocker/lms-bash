@@ -6,21 +6,32 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.2
-# @copyright © 2016, 2017. EarthWalk Software.
-# @license Licensed under the Academic Free License version 3.0
+# @version 0.1.3
+# @copyright © 2016, 2017, 2018. EarthWalk Software.
+# @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package Linux Management Scripts
 # @subpackage lmsHelp
 #
 # *****************************************************************************
 #
-#	Copyright © 2016, 2017. EarthWalk Software
-#	Licensed under the Academic Free License, version 3.0.
+#	Copyright © 2016, 2017, 2018. EarthWalk Software
+#	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
-#	Refer to the file named License.txt provided with the source,
-#	or from
+#   This file is part of ewsdocker/lms-bash.
 #
-#			http://opensource.org/licenses/academic.php
+#   ewsdocker/lms-bash is free software: you can redistribute 
+#   it and/or modify it under the terms of the GNU General Public License 
+#   as published by the Free Software Foundation, either version 3 of the 
+#   License, or (at your option) any later version.
+#
+#   ewsdocker/lms-bash is distributed in the hope that it will 
+#   be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+#   of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with ewsdocker/lms-bash.  If not, see 
+#   <http://www.gnu.org/licenses/>.
 #
 # *****************************************************************************
 #
@@ -28,11 +39,12 @@
 #					0.1.0 - 01-09-2017.
 #					0.1.1 - 01-29-2017.
 #					0.1.2 - 02-08-2017.
+#					0.1.3 - 09-06-2018.
 #
 # ******************************************************************************
 # ******************************************************************************
 
-declare -r lmslib_lmsHelp="0.1.2"	# version of library
+declare -r lmslib_lmsHelp="0.1.3"	# version of library
 
 # ******************************************************************************
 #
@@ -99,40 +111,29 @@ function lmsHelpQClear()
 # ******************************************************************************
 function lmsHelpInit()
 {
-	local helpFile=${1}
+	local helpFile="${1}"
+
+echo "helpFile: $helpFile"
 
 	[[ -z "${helpFile}" ]] && return 1
 
 	lmshlp_XmlFile=${helpFile}
-	lmshlp_XmlName="lmshlp_info"
 
-	lmshlp_Array=${lmshlp_XmlName}
+	lmshlp_Array="lmshlp_info"
 	lmshlp_error=0
 
 	lmsHelpQClear
 
-	lmsXMLParseInit ${lmshlp_XmlName} ${lmshlp_XmlFile}
-	[[ $? -eq 0 ]] ||
-	 {
-		lmshlp_error=$?
-		return 2
-	 }
+echo "loading help file."
 
-	lmsXMLParseToArray "//lms/help/options/var/@name" "${lmshlp_Array}" 0
+	lmsDomCLoad "${helpFile}" "${lmshlp_Array}" 0
 	[[ $? -eq 0 ]] ||
 	 {
 		lmshlp_error=$?
 		return 3
 	 }
 
-	lmsXMLParseToCmnd "count(//lms/help/options/var)"
-	[[ $? -eq 0 ]] ||
-	 {
-		lmshlp_error=$?
-		return 4
-	 }
-
-	lmshlp_Count=${lmsxmp_CommandResult}
+echo "help loaded."
 
 	return 0
 }

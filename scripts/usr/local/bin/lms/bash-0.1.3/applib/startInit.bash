@@ -60,17 +60,11 @@ lmsXPathSelect "lmsErrors" ${lmserr_arrayName}
 	lmsErrorExitScript "XmlError"
  }
 
-#lmsHelpInit ${lmsvar_help}
-#[[ $? -eq 0 ]] ||
-# {
-#	lmsConioDebugL "HelpError" "Help init failed."
-#	lmsErrorExitScript "HelpError"
-# }
-
 lmsDomCLoad "${lmsapp_declare}" "${lmsapp_stackName}" 0
 [[ $? -eq 0 ]] ||
  {
 	lmsapp_result=$?
+echo "Startup failed in lmsDomCLoad error: ${lmsapp_result}"
 	lmsConioDebugL "DOMError" "Startup failed in lmsDomCLoad error: ${lmsapp_result}"
 	lmsErrorExitScript "DOMError"
  }
@@ -95,5 +89,14 @@ lmsCliApply
 	lmsErrorExitScript "CliError"
  }
 
+echo "Init lmsHelp"
 
+lmsHelpInit ${lmsapp_help}
+[[ $? -eq 0 ]] ||
+ {
+	lmsConioDebugL "HelpError" "Help init failed."
+	lmsErrorExitScript "HelpError"
+ }
+
+echo "lmsHelp inited"
 
