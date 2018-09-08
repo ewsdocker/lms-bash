@@ -49,7 +49,7 @@ declare    lmslib_bashRelease="0.1.1"
 # *****************************************************************************
 
 declare    lmsscr_Version="0.0.3"						# script version
-declare    lmsvar_errors="$lmsbase_dirEtc/errorCodes.xml"
+declare    lmsapp_errors="$lmsbase_dirEtc/errorCodes.xml"
 declare    lmsvar_help="$lmsbase_dirEtc/testHelp.xml"			# path to the help information file
 
 declare	   lmstest_cliOptions="$lmsbase_dirEtc/testDOMToConfig.xml"

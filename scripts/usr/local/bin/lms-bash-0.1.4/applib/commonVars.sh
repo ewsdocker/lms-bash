@@ -6,7 +6,7 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.0.3
+# @version 0.0.4
 # @copyright © 2016, 2017, 2018. EarthWalk Software.
 # @license Licensed under the GNU General Public License, GPL-3.0-or-later.
 # @package lms-bash
@@ -46,19 +46,17 @@
 lmsscr_Version="0.0.1"						# script version
 
 #
-# test files
-#
-lmsvar_errors="$lmsbase_dirEtc/errorCodes.xml"
-lmsvar_help="$lmsbase_dirEtc/testHelp.xml"			# path to the help information file
-
-#
 # default application vars
 #
-lmsapp_guid=""
-lmsapp_nsuid=""
+lmsapp_declare="$lmsbase_dirEtc/cliOptions.xml"
+lmsapp_errors="$lmsbase_dirEtc/errorCodes.xml"
+lmsapp_help="$lmsbase_dirEtc/helpTest.xml"
 
 lmsapp_logDir="${lmsbase_dirAppLog}"
 lmsapp_logName="${lmsbase_dirAppLog}/${lmsapp_name}"
+
+lmsapp_guid=""
+lmsapp_nsuid=""
 
 lmsapp_result=0
 

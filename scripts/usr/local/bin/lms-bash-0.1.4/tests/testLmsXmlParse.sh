@@ -50,8 +50,7 @@ declare    lmslib_bashRelease="0.1.1"
 
 declare    lmsscr_Version="0.1.2"					# script version
 
-declare    lmsvar_errors="$lmsbase_dirEtc/errorCodes.xml"
-declare	   lmsvar_help="$lmsbase_dirEtc/testHelp.xml"
+declare    lmsapp_errors="$lmsbase_dirEtc/errorCodes.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -254,10 +253,10 @@ lmsScriptFileName $0
 # *****************************************************************************
 
 #
-#		lmsvar_errors tests
+#		lmsapp_errors tests
 #
 lmsConioDisplay ""
-testParse "parseErrorCodes" "${lmsvar_errors}" "//lms/ErrorMsgs/ErrorCode/@name"
+testParse "parseErrorCodes" "${lmsapp_errors}" "//lms/ErrorMsgs/ErrorCode/@name"
 [[ $? -eq 0 ]] ||
  {
 	testResult=$?
@@ -290,11 +289,11 @@ testParseCommand "count(//lms/help/labels/label)"
 #		more lmsXMLParseInit
 #
 
-lmsXMLParseInit "errortest" "${lmsvar_errors}"
+lmsXMLParseInit "errortest" "${lmsapp_errors}"
 if [ $? -ne 0 ]
 then
 	testResult=$?
-	lmsConioDebugExit $LINENO "XmlError"  "lmsXMLParseInit ${lmsvar_errors} failed: $?"
+	lmsConioDebugExit $LINENO "XmlError"  "lmsXMLParseInit ${lmsapp_errors} failed: $?"
 fi
 
 xpCName="lmsStackWrite"

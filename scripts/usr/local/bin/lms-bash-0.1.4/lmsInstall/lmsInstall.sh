@@ -43,7 +43,7 @@
 # ***************************************************************************************************
 
 declare    lmsapp_name="lmsInstall"
-declare    lmslib_bashRelease="0.1.1"
+declare    lmslib_bashRelease="0.1.4"
 
 declare -i lmscli_optProduction=0
 

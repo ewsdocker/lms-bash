@@ -48,7 +48,6 @@
 # ***************************************************************************************************
 
 declare    lmsapp_name="testLmsCli"
-declare    lmslib_bashRelease="0.1.3"
 
 # *****************************************************************************
 
@@ -63,9 +62,6 @@ source $lmsbase_dirAppLib/commonVars.sh
 
 declare    lmsscr_Version="0.2.0"	# script version
 
-declare    lmsapp_declare="$lmsbase_dirEtc/cliOptions.xml"
-lmsapp_help="$lmsbase_dirEtc/helpTest.xml"	# path to the help file
-
 # *****************************************************************************
 # *****************************************************************************
 #
@@ -74,8 +70,8 @@ lmsapp_help="$lmsbase_dirEtc/helpTest.xml"	# path to the help file
 # *****************************************************************************
 # *****************************************************************************
 
-. $lmsbase_dirTestLib/testDump.sh
-. $lmsbase_dirTestLib/testUtilities.sh
+source $lmsbase_dirTestLib/testDump.sh
+source $lmsbase_dirTestLib/testUtilities.sh
 
 # *****************************************************************************
 # *****************************************************************************

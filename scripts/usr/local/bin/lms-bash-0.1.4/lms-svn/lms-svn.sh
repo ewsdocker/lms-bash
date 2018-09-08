@@ -91,7 +91,7 @@ fi
 # *****************************************************************************
 # *****************************************************************************
 
-lmsvar_errors="$etcDir/errorCodes.xml"  		# where to find the error code definitions
+lmsapp_errors="$etcDir/errorCodes.xml"  		# where to find the error code definitions
 
 lmssvn_help="$PWD/lms-svnHelp.xml"  			# where to find the help message file
 lmssvn_options="$PWD/lms-svnOptions.xml"		# where to find the options declarations
@@ -394,7 +394,7 @@ lmsLogOpen "${lmssvn_logFile}"
 	exit 1
  }
 
-lmsStartupInit $lmsscr_Version ${lmsvar_errors}
+lmsStartupInit $lmsscr_Version ${lmsapp_errors}
 [[ $? -eq 0 ]] ||
  {
 	logMessaage $LINENO "Debug" "Unable to load error codes."

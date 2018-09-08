@@ -45,7 +45,7 @@
 # *****************************************************************************
 
 declare    lmsapp_name="getSongInfo"
-declare    lmslib_bashRelease="0.1.3"
+declare    lmslib_bashRelease="0.1.4"
 
 declare -i lmscli_optProduction=0
 
@@ -63,7 +63,7 @@ source $lmsbase_dirLib/commonVars.sh
 
 lmsscr_Version="1.1.6"									# script version
 
-lmsvar_errors="$lmsbase_dirEtc/errorCodes.xml"
+lmsapp_errors="$lmsbase_dirEtc/errorCodes.xml"
 lmsvar_help="$lmsbase_dirEtc/getSongHelp.xml"					# path to the help information file
 lmsvar_SongOptions="$lmsbase_dirEtc/getSongOptions.xml"
 

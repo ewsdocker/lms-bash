@@ -42,7 +42,7 @@
 # *****************************************************************************
 # *****************************************************************************
 
-declare    lmslib_bashRelease="0.1.3"
+declare    lmslib_bashRelease="0.1.4"
 
 # *****************************************************************************
 
@@ -57,7 +57,7 @@ declare    lmsbase_dirBase="/usr/local"
 
 # *****************************************************************************
 
-declare    lmsbase_bash="lms/bash"
+declare    lmsbase_bash="lms-bash"
 declare    lmsbase_bashRelease="${lmsbase_bash}-${lmslib_bashRelease}"
 
 lmsbase_dirBase="${lmsbase_prefix}${lmsbase_dirBase}"

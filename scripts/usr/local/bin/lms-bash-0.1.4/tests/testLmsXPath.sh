@@ -50,8 +50,7 @@ declare    lmslib_bashRelease="0.1.1"
 
 lmsscr_Version="0.1.2"						# script version
 
-lmsvar_errors="$lmsbase_dirEtc/errorCodes.xml"
-lmsvar_help="$lmsbase_dirEtc/testHelp.xml"			# path to the help information file
+lmsapp_errors="$lmsbase_dirEtc/errorCodes.xml"
 
 # *****************************************************************************
 # *****************************************************************************
@@ -439,12 +438,12 @@ testLmsXPathCommand ${helpCommand}
 #lmsConioDisplay ""
 #lmsConioDisplay "*******************************************"
 
-testLmsErrorInitialize "${lmsvar_errors}"
+testLmsErrorInitialize "${lmsapp_errors}"
 
 lmsConioDisplay ""
 lmsConioDisplay "*******************************************"
 
-testLmsXPathSelect "lmsErrors" ${lmsvar_errors}
+testLmsXPathSelect "lmsErrors" ${lmsapp_errors}
 
 testLmsDmpVar "lmserr_"
 

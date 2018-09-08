@@ -75,7 +75,7 @@ fi
 # *******************************************************
 
 lmsscr_Version="0.0.1"		# script version
-lmsvar_errors="$etcDir/errorCodes.xml"
+lmsapp_errors="$etcDir/errorCodes.xml"
 
 # *******************************************************
 # *******************************************************
@@ -403,7 +403,7 @@ checkResult()
 lmscli_Validate=1
 
 lmscli_ParamBuffer=( "$@" )
-lmsStartupInit "1.0.0" $lmsvar_errors $lmsvar_help $lmsVariables
+lmsStartupInit "1.0.0" $lmsapp_errors $lmsvar_help $lmsVariables
 
 case $? in
 

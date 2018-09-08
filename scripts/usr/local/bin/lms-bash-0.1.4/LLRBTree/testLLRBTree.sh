@@ -28,11 +28,11 @@ if [ $lmscli_optProduction -eq 1 ]
 then
 	rootDir="/usr/local"
 	libDir="$rootDir/lib/lms/bash"
-	lmsvar_errors="$rootDir/etc/lms/errorCodes.xml"
+	lmsapp_errors="$rootDir/etc/lms/errorCodes.xml"
 else
 	rootDir="../.."
 	libDir="$rootDir/lib"
-	lmsvar_errors="$rootDir/etc/errorCodes.xml"
+	lmsapp_errors="$rootDir/etc/errorCodes.xml"
 fi
 
 . $libDir/arraySort.sh

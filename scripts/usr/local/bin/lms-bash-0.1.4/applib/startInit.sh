@@ -43,7 +43,7 @@
 #
 #	Run the startup initialize function(s)
 #
-lmsStartupInit $lmsscr_Version ${lmsvar_errors}
+lmsStartupInit $lmsscr_Version ${lmsapp_errors}
 [[ $? -eq 0 ]] ||
  {
 	lmsConioDebugL "Debug" "Unable to load error codes."

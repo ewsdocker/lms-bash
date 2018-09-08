@@ -43,14 +43,12 @@
 # *****************************************************************************
 # *****************************************************************************
 
-testlibDir="../testlib"
+source ../applib/installDirs.sh
 
-source $testlibDir/installDirs.sh
+source $lmsbase_dirAppLib/stdLibs.sh
+source $lmsbase_dirAppLib/cliOptions.sh
 
-source $testlibDir/stdLibs.sh
-source $testlibDir/cliOptions.sh
-
-source $testlibDir/commonVars.sh
+source $lmsbase_dirAppLib/commonVars.sh
 
 # *****************************************************************************
 
@@ -64,8 +62,8 @@ lmsscr_Version="0.0.3"					# script version
 # *****************************************************************************
 # *****************************************************************************
 
-source $testlibDir/testDump.sh
-source $testlibDir/testUtilities.sh
+source $lmsbase_dirTestLib/testDump.sh
+source $lmsbase_dirTestLib/testUtilities.sh
 
 # *****************************************************************************
 # *****************************************************************************
@@ -85,8 +83,8 @@ source $testlibDir/testUtilities.sh
 
 lmsScriptFileName $0
 
-source $testlibDir/openLog.sh
-source $testlibDir/startInit.sh
+source $lmsbase_dirAppLb/openLog.sh
+source $lmsbase_dirAppLib/startInit.sh
 
 # *****************************************************************************
 # *****************************************************************************
