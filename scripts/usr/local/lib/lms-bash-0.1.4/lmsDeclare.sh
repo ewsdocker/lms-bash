@@ -6,15 +6,15 @@
 # *****************************************************************************
 #
 # @author Jay Wheeler.
-# @version 0.1.1
-# @copyright © 2016, 2017, 2018. EarthWalk Software.
+# @version 0.2.0
+# @copyright © 2016-2019. EarthWalk Software.
 # @license Licensed under the Academic Free License version 3.0
 # @package Linux Management Scripts
 # @subpackage lmsDeclare
 #
 # *****************************************************************************
 #
-#	Copyright © 2016, 2017, 2018. EarthWalk Software
+#	Copyright © 2016-2019. EarthWalk Software
 #	Licensed under the GNU General Public License, GPL-3.0-or-later.
 #
 #   This file is part of ewsdocker/lms-bash.
@@ -40,6 +40,7 @@
 #					0.0.3 - 06-28-2016.
 #					0.1.0 - 01-10-2017.
 #					0.1.1 - 08-25-2018.
+#					0.2.0 - 07-06-2019.
 #
 # *********************************************************************************
 
